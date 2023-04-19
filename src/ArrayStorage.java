@@ -30,13 +30,14 @@ public class ArrayStorage {
 
             if (storage[i].uuid.equals(uuid)) {
 
-                storage[i] = null;
-
                 // Shift elements after deletion
                 for (int j = i + 1; j < size; j++) {
                     storage[j - 1] = storage[j];
                 }
+
+                storage[size] = null;
                 size--;
+
                 break;
             }
         }
