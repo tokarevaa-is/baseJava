@@ -1,9 +1,14 @@
+package com.tokarevaa.webapp;
+
+import com.tokarevaa.webapp.model.Resume;
+import com.tokarevaa.webapp.storage.ArrayStorage;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * Interactive test for ArrayStorage implementation
+ * Interactive test for com.tokarevaa.webapp.storage.ArrayStorage implementation
  * (just run, no need to understand)
  */
 public class MainArray {

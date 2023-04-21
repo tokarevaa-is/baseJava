@@ -1,5 +1,10 @@
+package com.tokarevaa.webapp;
+
+import com.tokarevaa.webapp.storage.ArrayStorage;
+import com.tokarevaa.webapp.model.Resume;
+
 /**
- * Test for your ArrayStorage implementation
+ * Test for your com.tokarevaa.webapp.storage.ArrayStorage implementation
  */
 public class MainTestArrayStorage {
     static final ArrayStorage ARRAY_STORAGE = new ArrayStorage();
@@ -20,6 +25,14 @@ public class MainTestArrayStorage {
         System.out.println("Size: " + ARRAY_STORAGE.size());
 
         System.out.println("Get dummy: " + ARRAY_STORAGE.get("dummy"));
+
+        Resume r4 = new Resume();
+        r4.uuid = "uuid4";
+        ARRAY_STORAGE.save(r4);
+        r3.uuid = "uuid33";
+        printAll();
+        ARRAY_STORAGE.update(r3);
+        ARRAY_STORAGE.update(r4);
 
         printAll();
         ARRAY_STORAGE.delete(r1.uuid);
