@@ -20,13 +20,13 @@ public class ArrayStorage {
     }
 
     public void save(Resume r) {
-        if (size >= STORAGE_LIMIT)
+        if (size >= STORAGE_LIMIT) {
             // Overflow check
             System.out.println("Resume storage overflow");
-        else if (getIndex(r.uuid) != -1)
+        } else if (getIndex(r.uuid) != -1) {
             // Existence check
             System.out.println("Resume " + r.uuid + " is already exist");
-        else {
+        } else {
             // Add new resume
             storage[size] = r;
             size++;
@@ -50,8 +50,9 @@ public class ArrayStorage {
             storage[size] = null;
             size--;
             System.out.println("Resume " + uuid + " deleted");
-        } else
+        } else {
             System.out.println("Resume " + uuid + " doesn't exist");
+        }
     }
 
     public void update(Resume resume) {
@@ -59,15 +60,18 @@ public class ArrayStorage {
         if (resumeIndex != -1) {
             storage[resumeIndex] = resume;
             System.out.println("Resume " + resume.uuid + " updated");
-        } else
+        } else {
             System.out.println("Resume " + resume.uuid + " doesn't exist");
+        }
     }
 
     //Check existence of Resume in Storage
     private int getIndex(String uuid) {
-        for (int i = 0; i < size; i++)
-            if (storage[i].uuid.equals(uuid))
+        for (int i = 0; i < size; i++) {
+            if (storage[i].uuid.equals(uuid)) {
                 return i;
+            }
+        }
         return -1;
     }
 
