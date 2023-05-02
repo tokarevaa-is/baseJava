@@ -8,8 +8,8 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    int STORAGE_LIMIT = 10_000;
-    Resume[] storage = new Resume[STORAGE_LIMIT];
+    protected final int STORAGE_LIMIT = 10_000;
+    protected final Resume[] storage = new Resume[STORAGE_LIMIT];
 
     // Resume Count
     int size = 0;
@@ -20,17 +20,14 @@ public class ArrayStorage {
     }
 
     public void save(Resume r) {
-
-        // Overflow check
-        if ((size + 1) >= STORAGE_LIMIT)
+        if (size >= STORAGE_LIMIT)
+            // Overflow check
             System.out.println("Resume storage overflow");
-
         else if (getIndex(r.uuid) != -1)
             // Existence check
             System.out.println("Resume " + r.uuid + " is already exist");
-
-            // Add new resume
         else {
+            // Add new resume
             storage[size] = r;
             size++;
             System.out.println("Resume " + r.uuid + " added to storage");
@@ -41,20 +38,18 @@ public class ArrayStorage {
         int resumeIndex = getIndex(uuid);
         if (resumeIndex != -1) {
             return storage[resumeIndex];
-        } else
-            System.out.println("Resume " + uuid + " doesn't exist");
+        }
+        System.out.println("Resume " + uuid + " doesn't exist");
         return null;
     }
 
     public void delete(String uuid) {
         int resumeIndex = getIndex(uuid);
         if (resumeIndex != -1) {
-
             storage[resumeIndex] = storage[size];
             storage[size] = null;
             size--;
             System.out.println("Resume " + uuid + " deleted");
-
         } else
             System.out.println("Resume " + uuid + " doesn't exist");
     }
