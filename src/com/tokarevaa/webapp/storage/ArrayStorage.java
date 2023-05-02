@@ -11,7 +11,6 @@ public class ArrayStorage {
     protected final int STORAGE_LIMIT = 10_000;
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
 
-    // Resume Count
     int size = 0;
 
     public void clear() {
@@ -21,13 +20,10 @@ public class ArrayStorage {
 
     public void save(Resume r) {
         if (size >= STORAGE_LIMIT) {
-            // Overflow check
             System.out.println("Resume storage overflow");
         } else if (getIndex(r.uuid) != -1) {
-            // Existence check
             System.out.println("Resume " + r.uuid + " is already exist");
         } else {
-            // Add new resume
             storage[size] = r;
             size++;
             System.out.println("Resume " + r.uuid + " added to storage");
@@ -65,7 +61,6 @@ public class ArrayStorage {
         }
     }
 
-    //Check existence of Resume in Storage
     private int getIndex(String uuid) {
         for (int i = 0; i < size; i++) {
             if (storage[i].uuid.equals(uuid)) {
