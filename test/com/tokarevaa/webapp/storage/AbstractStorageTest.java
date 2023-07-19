@@ -18,7 +18,11 @@ public abstract class AbstractStorageTest {
     private static final String UUID_4 = "uuid4";
     private static final Resume RESUME_4 = new Resume(UUID_4);
     private static final String UUID_NOT_EXISTS = "NotExist";
-    private final Storage storage;
+    protected final Storage storage;
+
+    public Resume[] getStaticResumes() {
+        return new Resume[]{RESUME_1, RESUME_2, RESUME_3};
+    }
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -69,8 +73,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void getAll() {
-        Resume[] resumes = new Resume[]{RESUME_1, RESUME_2, RESUME_3};
-        Assert.assertArrayEquals(resumes, storage.getAll());
+        Assert.assertArrayEquals(getStaticResumes(), storage.getAll());
     }
 
     @Test
@@ -99,7 +102,7 @@ public abstract class AbstractStorageTest {
 
     @Test(expected = StorageException.class)
     public void saveOverflow() {
-        if (ListStorageTest.class == this.getClass()) {
+        if (ListStorageTest.class == this.getClass() || MapStorageTest.class == this.getClass()) {
             throw new StorageException("Not for List class", "");
         }
 

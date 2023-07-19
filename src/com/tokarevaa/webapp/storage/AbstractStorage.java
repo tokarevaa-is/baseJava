@@ -6,51 +6,49 @@ import com.tokarevaa.webapp.model.Resume;
 
 public abstract class AbstractStorage implements Storage {
 
-    protected abstract int getResumeByKey(String uuid);
+    protected abstract Object getResumeByKey(String uuid);
 
     protected abstract void doSave(Resume resume);
 
-    protected abstract Resume doGet(int index);
+    protected abstract Resume doGet(Object searchKey);
 
-    protected abstract void doDelete(Resume uuid);
+    protected abstract void doDelete(Object searchKey);
 
-    protected abstract void doUpdate(int index, Resume resume);
+    protected abstract void doUpdate(Object searchKey, Resume resume);
 
     @Override
     public void save(Resume resume) {
-        if (isExist(resume.getUuid())) {
-            throw new ExistStorageException(resume.getUuid());
-        }
+        getNotExistingSearchKey(resume.getUuid());
         doSave(resume);
-    }
-
-    private boolean isExist(String uuid) {
-        return getResumeByKey(uuid) >= 0;
     }
 
     @Override
     public Resume get(String uuid) {
-        int index = getResumeByKey(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        }
-        return doGet(index);
+        return doGet(getExistingSearchKey(uuid));
     }
 
     @Override
     public void delete(String uuid) {
-        Resume resume = get(uuid);
-        if (resume != null) {
-            doDelete(resume);
-        }
+        doDelete(getExistingSearchKey(uuid));
     }
 
     @Override
     public void update(Resume resume) {
-        int index = getResumeByKey(resume.getUuid());
-        if (index < 0) {
-            throw new NotExistStorageException(resume.getUuid());
+        doUpdate(getExistingSearchKey(resume.getUuid()), resume);
+    }
+
+    private void getNotExistingSearchKey(String uuid) {
+        Object searchKey = getResumeByKey(uuid);
+        if (searchKey != null) {
+            throw new ExistStorageException(uuid);
         }
-        doUpdate(index, resume);
+    }
+
+    private Object getExistingSearchKey(String uuid) {
+        Object searchKey = getResumeByKey(uuid);
+        if (searchKey == null) {
+            throw new NotExistStorageException(uuid);
+        }
+        return searchKey;
     }
 }

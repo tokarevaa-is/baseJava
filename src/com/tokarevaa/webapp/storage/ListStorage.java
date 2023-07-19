@@ -25,14 +25,14 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected int getResumeByKey(String uuid) {
+    protected Object getResumeByKey(String uuid) {
         for (ListIterator<Resume> iterator = list.listIterator(); iterator.hasNext(); ) {
             Resume r = iterator.next();
-            if (r.getUuid().equals(uuid)){
+            if (r.getUuid().equals(uuid)) {
                 return iterator.nextIndex() - 1;
             }
         }
-        return -1;
+        return null;
     }
 
     @Override
@@ -41,17 +41,17 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume doGet(int index) {
-        return list.get(index);
+    protected Resume doGet(Object searchKey) {
+        return list.get((Integer) searchKey);
     }
 
     @Override
-    protected void doDelete(Resume resume) {
-        list.remove(resume);
+    protected void doDelete(Object searchKey) {
+        list.remove((int) searchKey);
     }
 
     @Override
-    protected void doUpdate(int index, Resume resume) {
-        list.set(index, resume);
+    protected void doUpdate(Object searchKey, Resume resume) {
+        list.set((Integer) searchKey, resume);
     }
 }
