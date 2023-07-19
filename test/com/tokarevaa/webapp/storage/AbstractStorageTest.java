@@ -102,10 +102,6 @@ public abstract class AbstractStorageTest {
 
     @Test(expected = StorageException.class)
     public void saveOverflow() {
-        if (ListStorageTest.class == this.getClass() || MapStorageTest.class == this.getClass()) {
-            throw new StorageException("Not for List class", "");
-        }
-
         try {
             for (int i = storage.size(); i <= AbstractArrayStorage.STORAGE_LIMIT - 1; i++) {
                 storage.save(new Resume());
