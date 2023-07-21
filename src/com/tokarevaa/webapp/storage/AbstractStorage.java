@@ -6,9 +6,9 @@ import com.tokarevaa.webapp.model.Resume;
 
 public abstract class AbstractStorage implements Storage {
 
-    protected abstract Object getResumeByKey(String uuid);
+    protected abstract Object getSearchKey(String uuid);
 
-    protected abstract void doSave(Resume resume);
+    protected abstract void doSave(Object searchKey, Resume resume);
 
     protected abstract Resume doGet(Object searchKey);
 
@@ -16,10 +16,11 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract void doUpdate(Object searchKey, Resume resume);
 
+    protected abstract boolean isExist(Object searchKey);
+
     @Override
     public void save(Resume resume) {
-        getNotExistingSearchKey(resume.getUuid());
-        doSave(resume);
+        doSave(getNotExistingSearchKey(resume.getUuid()), resume);
     }
 
     @Override
@@ -37,16 +38,17 @@ public abstract class AbstractStorage implements Storage {
         doUpdate(getExistingSearchKey(resume.getUuid()), resume);
     }
 
-    private void getNotExistingSearchKey(String uuid) {
-        Object searchKey = getResumeByKey(uuid);
-        if (searchKey != null) {
+    private Object getNotExistingSearchKey(String uuid) {
+        Object searchKey = getSearchKey(uuid);
+        if (isExist(searchKey)) {
             throw new ExistStorageException(uuid);
         }
+        return searchKey;
     }
 
     private Object getExistingSearchKey(String uuid) {
-        Object searchKey = getResumeByKey(uuid);
-        if (searchKey == null) {
+        Object searchKey = getSearchKey(uuid);
+        if (!isExist(searchKey)) {
             throw new NotExistStorageException(uuid);
         }
         return searchKey;

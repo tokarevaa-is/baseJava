@@ -9,12 +9,8 @@ public class MapStorage extends AbstractStorage {
     private final Map<String, Resume> resumeMap = new HashMap<>();
 
     @Override
-    protected Object getResumeByKey(String uuid) {
-        Resume resume = doGet(uuid);
-        if (resume != null) {
-            return resume.getUuid();
-        }
-        return null;
+    protected Object getSearchKey(String uuid) {
+        return resumeMap.containsKey(uuid) ? uuid : null;
     }
 
     @Override
@@ -23,7 +19,7 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doSave(Resume resume) {
+    protected void doSave(Object searchKey, Resume resume) {
         resumeMap.put(resume.getUuid(), resume);
     }
 
@@ -35,6 +31,11 @@ public class MapStorage extends AbstractStorage {
     @Override
     protected void doUpdate(Object searchKey, Resume resume) {
         resumeMap.put((String) searchKey, resume);
+    }
+
+    @Override
+    protected boolean isExist(Object searchKey) {
+        return doGet(searchKey) != null;
     }
 
     @Override

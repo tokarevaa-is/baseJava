@@ -25,7 +25,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object getResumeByKey(String uuid) {
+    protected Object getSearchKey(String uuid) {
         for (ListIterator<Resume> iterator = list.listIterator(); iterator.hasNext(); ) {
             Resume r = iterator.next();
             if (r.getUuid().equals(uuid)) {
@@ -36,7 +36,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doSave(Resume resume) {
+    protected void doSave(Object searchKey, Resume resume) {
         list.add(resume);
     }
 
@@ -53,5 +53,12 @@ public class ListStorage extends AbstractStorage {
     @Override
     protected void doUpdate(Object searchKey, Resume resume) {
         list.set((Integer) searchKey, resume);
+    }
+
+    @Override
+    protected boolean isExist(Object searchKey) {
+        if (searchKey == null)
+            return false;
+        return doGet(searchKey) != null;
     }
 }

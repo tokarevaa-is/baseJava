@@ -1,16 +1,13 @@
 package com.tokarevaa.webapp.storage;
 
-import com.tokarevaa.webapp.exception.ExistStorageException;
-import com.tokarevaa.webapp.exception.NotExistStorageException;
 import com.tokarevaa.webapp.exception.StorageException;
 import com.tokarevaa.webapp.model.Resume;
 
 import java.util.Arrays;
 
-public abstract class AbstractArrayStorage implements Storage {
+public abstract class AbstractArrayStorage extends AbstractStorage {
     public static final int STORAGE_LIMIT = 10_000;
-
-    protected Resume[] storage = new Resume[STORAGE_LIMIT];
+    protected final Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
 
     public int size() {
@@ -22,58 +19,47 @@ public abstract class AbstractArrayStorage implements Storage {
         size = 0;
     }
 
-    public void update(Resume r) {
-        int index = getIndex(r.getUuid());
-        if (index != -1) {
-            storage[index] = r;
-            System.out.println("Resume " + r.getUuid() + " updated");
-        } else {
-            throw new NotExistStorageException(r.getUuid());
-        }
+    @Override
+    public void doUpdate(Object searchKey, Resume r) {
+        storage[(int) searchKey] = r;
     }
 
-    public Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        }
-        return storage[index];
+    @Override
+    public Resume doGet(Object searchKey) {
+        return storage[(int) searchKey];
     }
-
-    protected abstract int getIndex(String uuid);
 
     public Resume[] getAll() {
         return Arrays.copyOfRange(storage, 0, size);
     }
 
-    public void save(Resume r) {
+    @Override
+    public void doSave(Object searchKey, Resume r) {
         if (size >= STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", r.getUuid());
         } else {
-            int index = getIndex(r.getUuid());
-            if (index < 0) {
-                insertElement(r, index);
+            if ((int) searchKey < 0) {
+                insertElement(r, (int) searchKey);
                 size++;
-                System.out.println("Resume " + r.getUuid() + " added to storage");
-            } else {
-                throw new ExistStorageException(r.getUuid());
             }
         }
     }
 
-    protected abstract void insertElement(Resume r, int index);
+    @Override
+    public void doDelete(Object searchKey) {
+        fillDeletedElement((int) searchKey);
+        storage[size - 1] = null;
+        size--;
+    }
 
-    public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index != -1) {
-            fillDeletedElement(index);
-            storage[size - 1] = null;
-            size--;
-            System.out.println("Resume " + uuid + " deleted");
-        } else {
-            throw new NotExistStorageException(uuid);
-        }
+    @Override
+    protected boolean isExist(Object searchKey) {
+        return (int) searchKey >= 0;
     }
 
     protected abstract void fillDeletedElement(int index);
+
+    protected abstract Object getSearchKey(String uuid);
+
+    protected abstract void insertElement(Resume r, int index);
 }
