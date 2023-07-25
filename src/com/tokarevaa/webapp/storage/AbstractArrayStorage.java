@@ -4,6 +4,7 @@ import com.tokarevaa.webapp.exception.StorageException;
 import com.tokarevaa.webapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
 public abstract class AbstractArrayStorage extends AbstractStorage {
     public static final int STORAGE_LIMIT = 10_000;
@@ -29,8 +30,12 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return storage[(int) searchKey];
     }
 
-    public Resume[] getAll() {
+    private Resume[] getAll() {
         return Arrays.copyOfRange(storage, 0, size);
+    }
+
+    public List<Resume> doGetAll() {
+        return Arrays.asList(getAll());
     }
 
     @Override

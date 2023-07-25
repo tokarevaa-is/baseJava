@@ -14,10 +14,6 @@ public class ListStorage extends AbstractStorage {
         list.clear();
     }
 
-    @Override
-    public Resume[] getAll() {
-        return list.toArray(new Resume[0]);
-    }
 
     @Override
     public int size() {
@@ -26,7 +22,7 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected Object getSearchKey(String uuid) {
-        for (ListIterator<Resume> iterator = list.listIterator(); iterator.hasNext(); ) {
+        for (ListIterator<Resume> iterator = list.listIterator(); iterator.hasNext(); )  {
             Resume r = iterator.next();
             if (r.getUuid().equals(uuid)) {
                 return iterator.nextIndex() - 1;
@@ -57,8 +53,14 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected boolean isExist(Object searchKey) {
-        if (searchKey == null)
+        if (searchKey == null) {
             return false;
+        }
         return doGet(searchKey) != null;
+    }
+
+    @Override
+    protected List<Resume> doGetAll() {
+        return new ArrayList<>(list);
     }
 }
