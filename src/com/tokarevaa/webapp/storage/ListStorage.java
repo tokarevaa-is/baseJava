@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-public class ListStorage extends AbstractStorage {
+public class ListStorage extends AbstractStorage<Integer> {
     private final List<Resume> list = new ArrayList<>();
 
     @Override
@@ -21,8 +21,8 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object getSearchKey(String uuid) {
-        for (ListIterator<Resume> iterator = list.listIterator(); iterator.hasNext(); )  {
+    protected Integer getSearchKey(String uuid) {
+        for (ListIterator<Resume> iterator = list.listIterator(); iterator.hasNext(); ) {
             Resume r = iterator.next();
             if (r.getUuid().equals(uuid)) {
                 return iterator.nextIndex() - 1;
@@ -32,27 +32,27 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doSave(Object searchKey, Resume resume) {
+    protected void doSave(Integer searchKey, Resume resume) {
         list.add(resume);
     }
 
     @Override
-    protected Resume doGet(Object searchKey) {
-        return list.get((Integer) searchKey);
+    protected Resume doGet(Integer searchKey) {
+        return list.get(searchKey);
     }
 
     @Override
-    protected void doDelete(Object searchKey) {
+    protected void doDelete(Integer searchKey) {
         list.remove((int) searchKey);
     }
 
     @Override
-    protected void doUpdate(Object searchKey, Resume resume) {
-        list.set((Integer) searchKey, resume);
+    protected void doUpdate(Integer searchKey, Resume resume) {
+        list.set(searchKey, resume);
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
+    protected boolean isExist(Integer searchKey) {
         if (searchKey == null) {
             return false;
         }
