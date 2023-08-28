@@ -3,15 +3,15 @@ package com.tokarevaa.webapp.model;
 import com.tokarevaa.webapp.assist.Assistant;
 
 public class TextSection extends Section {
-    private final String textContent;
+    private final String content;
 
     public TextSection(String content) {
-        textContent = content;
+        this.content = content;
     }
 
     @Override
     public int hashCode() {
-        return textContent.hashCode();
+        return content.hashCode();
     }
 
     @Override
@@ -22,11 +22,11 @@ public class TextSection extends Section {
 
         TextSection text = (TextSection) obj;
 
-        return textContent.equals(text.textContent);
+        return content.equals(text.content);
     }
 
     @Override
     public String toString() {
-        return textContent;
+        return content;
     }
 }
