@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.function.BiConsumer;
 
 public class ResumeDataTest {
@@ -86,85 +87,119 @@ public class ResumeDataTest {
         Section experience = new OrganizationSection(Arrays.asList(
                 new Organization(
                         "Java Online Projects",
-                        "Создание, организация и проведение Java онлайн проектов и стажировок.",
-                        "Автор проекта.",
-                        LocalDate.of(2013, 10, 1),
-                        LocalDate.now(),
-                        "http://javaops.ru/"
+                        "http://javaops.ru/",
+                        Collections.singletonList(
+                                new OrganizationStage(
+                                        "Автор проекта.",
+                                        "Создание, организация и проведение Java онлайн проектов и стажировок.",
+                                        LocalDate.of(2013, 10, 1),
+                                        LocalDate.now()
+                                )
+                        )
                 ),
                 new Organization(
                         "Wrike",
-                        "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.",
-                        "Старший разработчик (backend)",
-                        LocalDate.of(2014, 10, 1),
-                        getLastDay(2016, 1),
-                        "https://www.wrike.com/"
+                        "https://www.wrike.com/",
+                        Collections.singletonList(
+                                new OrganizationStage(
+                                        "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.",
+                                        "Старший разработчик (backend)",
+                                        LocalDate.of(2014, 10, 1),
+                                        getLastDay(2016, 1)
+                                )
+                        )
                 ),
                 new Organization(
                         "RIT Center",
-                        "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python",
-                        "Java архитектор",
-                        LocalDate.of(2012, 4, 1),
-                        getLastDay(2014, 10),
-                        ""
+                        "",
+                        Collections.singletonList(
+                                new OrganizationStage(
+                                        "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python",
+                                        "Java архитектор",
+                                        LocalDate.of(2012, 4, 1),
+                                        getLastDay(2014, 10)
+                                )
+                        )
                 )
         ));
         Section education = new OrganizationSection(Arrays.asList(
                 new Organization(
                         "Coursera",
-                        "Functional Programming Principles in Scala' by Martin Odersky",
-                        "",
-                        LocalDate.of(2013, 3, 1),
-                        getLastDay(2013, 5),
-                        "https://www.coursera.org/course/progfun"
+                        "https://www.coursera.org/course/progfun",
+                        Collections.singletonList(
+                                new OrganizationStage(
+                                        "Functional Programming Principles in Scala' by Martin Odersky",
+                                        "",
+                                        LocalDate.of(2013, 3, 1),
+                                        getLastDay(2013, 5)
+                                )
+                        )
                 ),
                 new Organization(
                         "Luxoft",
-                        "Курс 'Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.'",
-                        "",
-                        LocalDate.of(2011, 3, 1),
-                        getLastDay(2011, 4),
-                        "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366"
+                        "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366",
+                        Collections.singletonList(
+                                new OrganizationStage(
+                                        "Курс 'Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.'",
+                                        "",
+                                        LocalDate.of(2011, 3, 1),
+                                        getLastDay(2011, 4)
+                                )
+                        )
                 ),
                 new Organization(
                         "Siemens AG",
-                        "3 месяца обучения мобильным IN сетям (Берлин)",
-                        "",
-                        LocalDate.of(2015, 1, 1),
-                        getLastDay(2015, 4),
-                        "http://www.siemens.ru/"
+                        "http://www.siemens.ru/",
+                        Collections.singletonList(
+                                new OrganizationStage(
+                                        "3 месяца обучения мобильным IN сетям (Берлин)",
+                                        "",
+                                        LocalDate.of(2015, 1, 1),
+                                        getLastDay(2015, 4)
+                                )
+                        )
                 ),
                 new Organization(
                         "Alcatel",
-                        "6 месяцев обучения цифровым телефонным сетям (Москва)",
-                        "",
-                        LocalDate.of(1997, 9, 1),
-                        getLastDay(1998, 3),
-                        "http://www.alcatel.ru/"
+                        "http://www.alcatel.ru/",
+                        Collections.singletonList(
+                                new OrganizationStage(
+                                        "6 месяцев обучения цифровым телефонным сетям (Москва)",
+                                        "",
+                                        LocalDate.of(1997, 9, 1),
+                                        getLastDay(1998, 3)
+                                )
+                        )
                 ),
                 new Organization(
                         "Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
-                        "Аспирантура (программист С, С++)",
-                        "",
-                        LocalDate.of(1993, 9, 1),
-                        getLastDay(1996, 7),
-                        "http://www.ifmo.ru/"
-                ),
-                new Organization(
-                        "Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
-                        "Инженер (программист Fortran, C)",
-                        "",
-                        LocalDate.of(1987, 9, 1),
-                        getLastDay(1993, 7),
-                        "http://www.ifmo.ru/"
+                        "http://www.ifmo.ru/",
+                        Arrays.asList(
+                                new OrganizationStage(
+                                        "Аспирантура (программист С, С++)",
+                                        "",
+                                        LocalDate.of(1993, 9, 1),
+                                        getLastDay(1996, 7)
+                                ),
+                                new OrganizationStage(
+                                        "Инженер (программист Fortran, C)",
+                                        "",
+                                        LocalDate.of(1987, 9, 1),
+                                        getLastDay(1993, 7)
+                                )
+                        )
                 ),
                 new Organization(
                         "Заочная физико-техническая школа при МФТИ",
-                        "Закончил с отличием",
-                        "",
-                        LocalDate.of(1984, 9, 1),
-                        getLastDay(1987, 6),
-                        "http://www.ifmo.ru/"
+                        "http://www.ifmo.ru/",
+                        Collections.singletonList(
+                                new OrganizationStage(
+                                        "",
+                                        "Закончил с отличием",
+                                        LocalDate.of(1984, 9, 1),
+                                        getLastDay(1987, 6)
+                                )
+                        )
                 )
         ));
 
