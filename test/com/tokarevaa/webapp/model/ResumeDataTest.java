@@ -49,12 +49,6 @@ public class ResumeDataTest {
         checkContactSet(newResume, ContactType.STACKOVERFLOW, stackoverflow);
         checkContactSet(newResume, ContactType.URL, url);
 
-        System.out.println("Resume: " + newResume);
-        System.out.println("Contacts");
-        for (ContactType contact : ContactType.values()) {
-            System.out.printf("%s: %s\n", contact.getTitle(), newResume.getContacts(contact));
-        }
-
         Section personal = new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры.");
         Section objective = new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям");
         Section achievement = new ListSection(Arrays.asList(
@@ -213,6 +207,12 @@ public class ResumeDataTest {
     @Test
     public void main() {
         Resume resume = fillNewResume("uuid", "Григорий Кислин");
+
+        System.out.println("Resume: " + resume);
+        System.out.println("Contacts");
+        for (ContactType contact : ContactType.values()) {
+            System.out.printf("%s: %s\n", contact.getTitle(), resume.getContacts(contact));
+        }
 
         for (SectionType section : SectionType.values()) {
             System.out.printf("\n\n%s: \n %s\n", section.getTitle(), resume.getSections(section).toString());
