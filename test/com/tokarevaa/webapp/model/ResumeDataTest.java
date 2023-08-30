@@ -7,21 +7,18 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.function.BiConsumer;
 
 public class ResumeDataTest {
 
-    private static final Resume resume = new Resume("Григорий Кислин");
-
-    private static final BiConsumer<ContactType, String> CHECK_CONTACT_SET = (ct, s) -> {
+    private static void checkContactSet(Resume resume, ContactType ct, String s) {
         resume.setContacts(ct, s);
         Assert.assertEquals(resume.getContacts(ct), s);
-    };
+    }
 
-    private static final BiConsumer<SectionType, Section> CHECK_SECTION_SET = (st, s) -> {
+    private static void checkSectionSet(Resume resume, SectionType st, Section s) {
         resume.setSections(st, s);
         Assert.assertEquals(resume.getSections(st), s);
-    };
+    }
 
     private static LocalDate getLastDay(int year, int month) {
         Calendar calendar = Calendar.getInstance();
@@ -31,8 +28,8 @@ public class ResumeDataTest {
         return LocalDate.of(year, month, lastDayOfMonth);
     }
 
-    @Test
-    public void main() {
+    public static Resume fillNewResume(String uuid, String fullName) {
+        Resume newResume = new Resume(uuid, fullName);
 
         String mobile = "+7(921) 855-0482";
         String phone = "";
@@ -43,19 +40,19 @@ public class ResumeDataTest {
         String stackoverflow = "https://stackoverflow.com/users/548473";
         String url = "http://gkislin.ru/";
 
-        CHECK_CONTACT_SET.accept(ContactType.MOBILE, mobile);
-        CHECK_CONTACT_SET.accept(ContactType.PHONE, phone);
-        CHECK_CONTACT_SET.accept(ContactType.SKYPE, skype);
-        CHECK_CONTACT_SET.accept(ContactType.EMAIL, email);
-        CHECK_CONTACT_SET.accept(ContactType.LINKEDIN, linkedin);
-        CHECK_CONTACT_SET.accept(ContactType.GITHUB, github);
-        CHECK_CONTACT_SET.accept(ContactType.STACKOVERFLOW, stackoverflow);
-        CHECK_CONTACT_SET.accept(ContactType.URL, url);
+        checkContactSet(newResume, ContactType.MOBILE, mobile);
+        checkContactSet(newResume, ContactType.PHONE, phone);
+        checkContactSet(newResume, ContactType.SKYPE, skype);
+        checkContactSet(newResume, ContactType.EMAIL, email);
+        checkContactSet(newResume, ContactType.LINKEDIN, linkedin);
+        checkContactSet(newResume, ContactType.GITHUB, github);
+        checkContactSet(newResume, ContactType.STACKOVERFLOW, stackoverflow);
+        checkContactSet(newResume, ContactType.URL, url);
 
-        System.out.println("Resume: " + resume);
+        System.out.println("Resume: " + newResume);
         System.out.println("Contacts");
         for (ContactType contact : ContactType.values()) {
-            System.out.printf("%s: %s\n", contact.getTitle(), resume.getContacts(contact));
+            System.out.printf("%s: %s\n", contact.getTitle(), newResume.getContacts(contact));
         }
 
         Section personal = new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры.");
@@ -203,12 +200,19 @@ public class ResumeDataTest {
                 )
         ));
 
-        CHECK_SECTION_SET.accept(SectionType.PERSONAL, personal);
-        CHECK_SECTION_SET.accept(SectionType.OBJECTIVE, objective);
-        CHECK_SECTION_SET.accept(SectionType.ACHIEVEMENT, achievement);
-        CHECK_SECTION_SET.accept(SectionType.QUALIFICATIONS, qualifications);
-        CHECK_SECTION_SET.accept(SectionType.EXPERIENCE, experience);
-        CHECK_SECTION_SET.accept(SectionType.EDUCATION, education);
+        checkSectionSet(newResume, SectionType.PERSONAL, personal);
+        checkSectionSet(newResume, SectionType.OBJECTIVE, objective);
+        checkSectionSet(newResume, SectionType.ACHIEVEMENT, achievement);
+        checkSectionSet(newResume, SectionType.QUALIFICATIONS, qualifications);
+        checkSectionSet(newResume, SectionType.EXPERIENCE, experience);
+        checkSectionSet(newResume, SectionType.EDUCATION, education);
+
+        return newResume;
+    }
+
+    @Test
+    public void main() {
+        Resume resume = fillNewResume("uuid", "Григорий Кислин");
 
         for (SectionType section : SectionType.values()) {
             System.out.printf("\n\n%s: \n %s\n", section.getTitle(), resume.getSections(section).toString());
