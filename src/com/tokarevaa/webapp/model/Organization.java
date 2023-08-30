@@ -12,7 +12,7 @@ public class Organization {
     private final String position;
     private final LocalDate dateFrom;
     private final LocalDate dateTo;
-    private final Link link;
+    private final String link;
 
     public Organization(String title, String description, String position, LocalDate dateFrom, LocalDate dateTo, String link) {
         Objects.requireNonNull(title, "Title must not be null");
@@ -24,7 +24,7 @@ public class Organization {
         this.position = position;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
-        this.link = new Link(title, link);
+        this.link = link;
     }
 
     @Override
