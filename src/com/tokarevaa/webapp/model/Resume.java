@@ -10,7 +10,7 @@ import java.util.UUID;
 public class Resume implements Comparable<Resume>{
     private final String uuid;
     private final String fullName;
-    private final Map<ContactType, ContactSection> contacts = new EnumMap<>(ContactType.class);
+    private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
     private final Map<SectionType, Section> sections = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
@@ -22,11 +22,11 @@ public class Resume implements Comparable<Resume>{
         this.fullName = fullName;
     }
 
-    public void setContacts(ContactType contact, ContactSection value) {
+    public void setContacts(ContactType contact, String value) {
         contacts.put(contact, value);
     }
 
-    public ContactSection getContacts(ContactType contact) {
+    public String getContacts(ContactType contact) {
         return contacts.get(contact);
     }
 

@@ -13,7 +13,7 @@ public class ResumeDataTest {
 
     private static final Resume resume = new Resume("Григорий Кислин");
 
-    private static final BiConsumer<ContactType, ContactSection> CHECK_CONTACT_SET = (ct, s) -> {
+    private static final BiConsumer<ContactType, String> CHECK_CONTACT_SET = (ct, s) -> {
         resume.setContacts(ct, s);
         Assert.assertEquals(resume.getContacts(ct), s);
     };
@@ -34,14 +34,14 @@ public class ResumeDataTest {
     @Test
     public void main() {
 
-        ContactString mobile = new ContactString("+7(921) 855-0482");
-        ContactString phone = new ContactString("");
-        ContactLink skype = new ContactLink(new Link("skype:grigory.kislin"));
-        ContactLink email = new ContactLink(new Link("gkislin@yandex.ru"));
-        ContactLink linkedin = new ContactLink(new Link("Профиль LinkedIn", "https://www.linkedin.com/in/gkislin"));
-        ContactLink github = new ContactLink(new Link("Профиль GitHub", "https://github.com/gkislin"));
-        ContactLink stackoverflow = new ContactLink(new Link("Профиль Stackoverflow", "https://stackoverflow.com/users/548473"));
-        ContactLink url = new ContactLink(new Link("Домашняя страница", "http://gkislin.ru/"));
+        String mobile = "+7(921) 855-0482";
+        String phone = "";
+        String skype = "skype:grigory.kislin";
+        String email = "gkislin@yandex.ru";
+        String linkedin = "https://www.linkedin.com/in/gkislin";
+        String github = "https://github.com/gkislin";
+        String stackoverflow = "https://stackoverflow.com/users/548473";
+        String url = "http://gkislin.ru/";
 
         CHECK_CONTACT_SET.accept(ContactType.MOBILE, mobile);
         CHECK_CONTACT_SET.accept(ContactType.PHONE, phone);
