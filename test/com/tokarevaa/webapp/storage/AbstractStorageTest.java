@@ -7,15 +7,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.tokarevaa.webapp.model.ResumeDataTest.fillNewResume;
+
 public abstract class AbstractStorageTest {
     private static final String UUID_1 = "uuid1";
-    private static final Resume RESUME_1 = new Resume(UUID_1, "Name1");
+    private static final Resume RESUME_1 = fillNewResume(UUID_1, "Name1");
     private static final String UUID_2 = "uuid2";
-    private static final Resume RESUME_2 = new Resume(UUID_2, "Name2");
+    private static final Resume RESUME_2 = fillNewResume(UUID_2, "Name2");
     private static final String UUID_3 = "uuid3";
-    private static final Resume RESUME_3 = new Resume(UUID_3, "Name3");
+    private static final Resume RESUME_3 = fillNewResume(UUID_3, "Name3");
     private static final String UUID_4 = "uuid4";
-    private static final Resume RESUME_4 = new Resume(UUID_4, "Name4");
+    private static final Resume RESUME_4 = fillNewResume(UUID_4, "Name4");
     private static final String UUID_NOT_EXISTS = "NotExist";
     protected final Storage storage;
 
@@ -48,14 +50,14 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
-        Resume newResume = new Resume(UUID_3, "Name Update");
+        Resume newResume = fillNewResume(UUID_3, "Name Update");
         storage.update(newResume);
         Assert.assertSame(newResume, storage.get(UUID_3));
     }
 
     @Test(expected = NotExistStorageException.class)
     public void updateNotExist() {
-        Resume newResume = new Resume(UUID_NOT_EXISTS, "Not Exist");
+        Resume newResume = fillNewResume(UUID_NOT_EXISTS, "Not Exist");
         storage.update(newResume);
         Assert.assertSame(newResume, storage.get(UUID_3));
     }
