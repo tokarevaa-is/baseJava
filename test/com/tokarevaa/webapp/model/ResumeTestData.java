@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 
-public class ResumeDataTest {
+public class ResumeTestData {
 
     private static void checkContactSet(Resume resume, ContactType ct, String s) {
         resume.setContacts(ct, s);

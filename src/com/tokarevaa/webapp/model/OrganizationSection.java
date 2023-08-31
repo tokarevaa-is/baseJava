@@ -1,8 +1,7 @@
 package com.tokarevaa.webapp.model;
 
-import com.tokarevaa.webapp.assist.Assistant;
-
 import java.util.List;
+import java.util.Objects;
 
 public class OrganizationSection extends Section {
     private final List<Organization> organizationList;
@@ -16,15 +15,16 @@ public class OrganizationSection extends Section {
         return organizationList.hashCode();
     }
 
+    public List<Organization> getOrganizationList() {
+        return organizationList;
+    }
+
     @Override
-    public boolean equals(Object obj) {
-        if (!Assistant.isObjectEqualsBasic(this, obj)) {
-            return false;
-        }
-
-        OrganizationSection orgSec = (OrganizationSection) obj;
-
-        return organizationList.equals(orgSec.organizationList);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrganizationSection that = (OrganizationSection) o;
+        return Objects.equals(organizationList, that.organizationList);
     }
 
     @Override

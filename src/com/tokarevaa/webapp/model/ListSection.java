@@ -1,8 +1,7 @@
 package com.tokarevaa.webapp.model;
 
-import com.tokarevaa.webapp.assist.Assistant;
-
 import java.util.List;
+import java.util.Objects;
 
 public class ListSection extends Section {
     private final List<String> items;
@@ -16,15 +15,16 @@ public class ListSection extends Section {
         return items.toString();
     }
 
+    public List<String> getItems() {
+        return items;
+    }
+
     @Override
-    public boolean equals(Object obj) {
-        if (!Assistant.isObjectEqualsBasic(this, obj)) {
-            return false;
-        }
-
-        ListSection listObj = (ListSection) obj;
-
-        return items.equals(listObj.items);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ListSection that = (ListSection) o;
+        return Objects.equals(items, that.items);
     }
 
     @Override

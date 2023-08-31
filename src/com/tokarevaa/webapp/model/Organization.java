@@ -72,15 +72,30 @@ public class Organization {
         }
 
         @Override
-        public boolean equals(Object obj) {
-            if (!Assistant.isObjectEqualsBasic(this, obj)) {
-                return false;
-            }
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Period period = (Period) o;
+            return Objects.equals(position, period.position) &&
+                    Objects.equals(description, period.description) &&
+                    Objects.equals(dateFrom, period.dateFrom) &&
+                    Objects.equals(dateTo, period.dateTo);
+        }
 
-            Period stage = (Period) obj;
-            return Objects.equals(position, stage.position) &&
-                    Objects.equals(dateFrom, stage.dateFrom) &&
-                    Objects.equals(dateTo, stage.dateTo);
+        public String getPosition() {
+            return position;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public LocalDate getDateFrom() {
+            return dateFrom;
+        }
+
+        public LocalDate getDateTo() {
+            return dateTo;
         }
 
         @Override

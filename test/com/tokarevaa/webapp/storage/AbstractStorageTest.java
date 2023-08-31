@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.tokarevaa.webapp.model.ResumeDataTest.fillNewResume;
+import static com.tokarevaa.webapp.model.ResumeTestData.fillNewResume;
 
 public abstract class AbstractStorageTest {
     private static final String UUID_1 = "uuid1";
