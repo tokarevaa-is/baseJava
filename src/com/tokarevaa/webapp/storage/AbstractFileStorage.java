@@ -5,6 +5,8 @@ import com.tokarevaa.webapp.model.Resume;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public abstract class AbstractFileStorage extends AbstractStorage<File> {
@@ -54,7 +56,9 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected void doDelete(File file) {
         try {
-            file.delete();
+            if (!file.delete()) {
+                throw new StorageException("Delete file error", file.getName());
+            }
         } catch (Exception e) {
             throw new StorageException("Delete file error", file.getName(), e);
         }
@@ -81,14 +85,36 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
             for (File file : files) {
                 doDelete(file);
             }
+        } else {
+            throw new StorageException("Directory read error", directory.getPath());
         }
     }
 
     @Override
     public int size() {
         if (directory != null) {
-            return Objects.requireNonNull(directory.listFiles()).length;
+            File[] files = directory.listFiles();
+            if (files != null) {
+                return files.length;
+            } else {
+                throw new StorageException("Directory read error", directory.getPath());
+            }
         }
         return 0;
+    }
+
+    @Override
+    public List<Resume> doGetAll() {
+        ArrayList<Resume> resumes = new ArrayList<>();
+
+        File[] files = directory.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                resumes.add(doGet(file));
+            }
+        } else {
+                throw new StorageException("Directory read error", directory.getPath());
+        }
+        return resumes;
     }
 }
