@@ -2,17 +2,18 @@ package com.tokarevaa.webapp.model;
 
 import com.tokarevaa.webapp.assist.Assistant;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-public class Organization {
+public class Organization implements Serializable {
 
     private final String title;
     private final String link;
-    private final List<Period> stage;
+    private final List<Position> stage;
 
-    public Organization(String title, String link, List<Period> stage) {
+    public Organization(String title, String link, List<Position> stage) {
         Objects.requireNonNull(title, "Title must not be null");
         Objects.requireNonNull(stage, "Stages must not be null");
 
@@ -48,14 +49,14 @@ public class Organization {
         return String.format("Organization {Title: %s, Link: %s, Stages: {%s}", title, link, stage);
     }
 
-    public static class Period {
+    public static class Position implements Serializable {
 
         private final String position;
         private final String description;
         private final LocalDate dateFrom;
         private final LocalDate dateTo;
 
-        public Period(String position, String description, LocalDate dateFrom, LocalDate dateTo) {
+        public Position(String position, String description, LocalDate dateFrom, LocalDate dateTo) {
             this.position = position;
             this.description = description;
             this.dateFrom = dateFrom;
@@ -75,11 +76,11 @@ public class Organization {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            Period period = (Period) o;
-            return Objects.equals(position, period.position) &&
-                    Objects.equals(description, period.description) &&
-                    Objects.equals(dateFrom, period.dateFrom) &&
-                    Objects.equals(dateTo, period.dateTo);
+            Position position = (Position) o;
+            return Objects.equals(this.position, position.position) &&
+                    Objects.equals(description, position.description) &&
+                    Objects.equals(dateFrom, position.dateFrom) &&
+                    Objects.equals(dateTo, position.dateTo);
         }
 
         public String getPosition() {

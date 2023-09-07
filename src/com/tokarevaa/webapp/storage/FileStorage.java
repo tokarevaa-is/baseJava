@@ -1,4 +1,4 @@
-package com.tokarevaa.webapp.storage;
+ package com.tokarevaa.webapp.storage;
 
 import com.tokarevaa.webapp.exception.StorageException;
 import com.tokarevaa.webapp.model.Resume;
@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractFileStorage extends AbstractStorage<File> {
+public class FileStorage extends AbstractStorage<File> {
     private final File directory;
     private StreamSerializer streamSerializer;
 
-    public AbstractFileStorage(File directory, StreamSerializer ss) {
+    public FileStorage(File directory, StreamSerializer ss) {
         Objects.requireNonNull(directory, "Directory must not be null");
 
         if (!directory.isDirectory()) {
@@ -25,10 +25,6 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         this.directory = directory;
         streamSerializer = ss;
     }
-
-    protected abstract void doWrite(OutputStream os, Resume resume) throws IOException;
-
-    protected abstract Resume doRead(InputStream is) throws IOException;
 
     @Override
     protected File getSearchKey(String uuid) {
@@ -49,7 +45,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected Resume doGet(File file) {
         try {
-            return doRead(new BufferedInputStream(Files.newInputStream(file.toPath())));
+            return streamSerializer.doRead(new BufferedInputStream(Files.newInputStream(file.toPath())));
         } catch (Exception e) {
             throw new StorageException("Read file error", file.getName(), e);
         }
@@ -70,7 +66,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected void doUpdate(File file, Resume resume) {
         try {
-            doWrite(new BufferedOutputStream(Files.newOutputStream(file.toPath())), resume);
+            streamSerializer.doWrite(new BufferedOutputStream(Files.newOutputStream(file.toPath())), resume);
         } catch (Exception e) {
             throw new StorageException("Update file error", file.getName(), e);
         }

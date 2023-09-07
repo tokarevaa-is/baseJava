@@ -7,9 +7,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+
 import static com.tokarevaa.webapp.model.ResumeTestData.fillNewResume;
 
 public abstract class AbstractStorageTest {
+    protected final static File STORAGE_DIR = new File("C:\\Users\\aatokarev.MSC\\Documents\\java\\baseJava\\basejava\\storage");
     private static final String UUID_1 = "uuid1";
     private static final Resume RESUME_1 = fillNewResume(UUID_1, "Name1");
     private static final String UUID_2 = "uuid2";
@@ -21,12 +24,12 @@ public abstract class AbstractStorageTest {
     private static final String UUID_NOT_EXISTS = "NotExist";
     protected final Storage storage;
 
-    public Resume[] getStaticResumes() {
-        return new Resume[]{RESUME_1, RESUME_2, RESUME_3};
-    }
-
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
+    }
+
+    public Resume[] getStaticResumes() {
+        return new Resume[]{RESUME_1, RESUME_2, RESUME_3};
     }
 
     @Before
@@ -52,7 +55,7 @@ public abstract class AbstractStorageTest {
     public void update() {
         Resume newResume = fillNewResume(UUID_3, "Name Update");
         storage.update(newResume);
-        Assert.assertSame(newResume, storage.get(UUID_3));
+        Assert.assertTrue(newResume.equals(storage.get(UUID_3)));
     }
 
     @Test(expected = NotExistStorageException.class)

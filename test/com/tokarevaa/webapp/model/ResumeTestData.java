@@ -80,7 +80,7 @@ public class ResumeTestData {
                         "Java Online Projects",
                         "http://javaops.ru/",
                         Collections.singletonList(
-                                new Organization.Period(
+                                new Organization.Position(
                                         "Автор проекта.",
                                         "Создание, организация и проведение Java онлайн проектов и стажировок.",
                                         LocalDate.of(2013, 10, 1),
@@ -92,7 +92,7 @@ public class ResumeTestData {
                         "Wrike",
                         "https://www.wrike.com/",
                         Collections.singletonList(
-                                new Organization.Period(
+                                new Organization.Position(
                                         "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.",
                                         "Старший разработчик (backend)",
                                         LocalDate.of(2014, 10, 1),
@@ -104,7 +104,7 @@ public class ResumeTestData {
                         "RIT Center",
                         "",
                         Collections.singletonList(
-                                new Organization.Period(
+                                new Organization.Position(
                                         "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python",
                                         "Java архитектор",
                                         LocalDate.of(2012, 4, 1),
@@ -118,7 +118,7 @@ public class ResumeTestData {
                         "Coursera",
                         "https://www.coursera.org/course/progfun",
                         Collections.singletonList(
-                                new Organization.Period(
+                                new Organization.Position(
                                         "Functional Programming Principles in Scala' by Martin Odersky",
                                         "",
                                         LocalDate.of(2013, 3, 1),
@@ -130,7 +130,7 @@ public class ResumeTestData {
                         "Luxoft",
                         "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366",
                         Collections.singletonList(
-                                new Organization.Period(
+                                new Organization.Position(
                                         "Курс 'Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.'",
                                         "",
                                         LocalDate.of(2011, 3, 1),
@@ -142,7 +142,7 @@ public class ResumeTestData {
                         "Siemens AG",
                         "http://www.siemens.ru/",
                         Collections.singletonList(
-                                new Organization.Period(
+                                new Organization.Position(
                                         "3 месяца обучения мобильным IN сетям (Берлин)",
                                         "",
                                         LocalDate.of(2015, 1, 1),
@@ -154,7 +154,7 @@ public class ResumeTestData {
                         "Alcatel",
                         "http://www.alcatel.ru/",
                         Collections.singletonList(
-                                new Organization.Period(
+                                new Organization.Position(
                                         "6 месяцев обучения цифровым телефонным сетям (Москва)",
                                         "",
                                         LocalDate.of(1997, 9, 1),
@@ -166,13 +166,13 @@ public class ResumeTestData {
                         "Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
                         "http://www.ifmo.ru/",
                         Arrays.asList(
-                                new Organization.Period(
+                                new Organization.Position(
                                         "Аспирантура (программист С, С++)",
                                         "",
                                         LocalDate.of(1993, 9, 1),
                                         getLastDay(1996, 7)
                                 ),
-                                new Organization.Period(
+                                new Organization.Position(
                                         "Инженер (программист Fortran, C)",
                                         "",
                                         LocalDate.of(1987, 9, 1),
@@ -184,7 +184,7 @@ public class ResumeTestData {
                         "Заочная физико-техническая школа при МФТИ",
                         "http://www.ifmo.ru/",
                         Collections.singletonList(
-                                new Organization.Period(
+                                new Organization.Position(
                                         "",
                                         "Закончил с отличием",
                                         LocalDate.of(1984, 9, 1),
