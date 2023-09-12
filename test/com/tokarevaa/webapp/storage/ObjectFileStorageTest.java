@@ -4,7 +4,7 @@ import com.tokarevaa.webapp.serializer.ObjectStreamSerializer;
 
 public class ObjectFileStorageTest extends AbstractStorageTest{
 
-    protected ObjectFileStorageTest() {
+    public ObjectFileStorageTest() {
         super(new FileStorage(STORAGE_DIR, new ObjectStreamSerializer()));
     }
 }
