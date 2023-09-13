@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 public class PathStorage extends AbstractStorage<Path> {
     private final Path directory;
-    private StreamSerializer streamSerializer;
+    private final StreamSerializer streamSerializer;
 
     public PathStorage(String dir, StreamSerializer serializer) {
         directory = Paths.get(dir);

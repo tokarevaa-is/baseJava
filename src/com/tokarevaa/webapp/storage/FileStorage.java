@@ -1,10 +1,13 @@
- package com.tokarevaa.webapp.storage;
+package com.tokarevaa.webapp.storage;
 
 import com.tokarevaa.webapp.exception.StorageException;
 import com.tokarevaa.webapp.model.Resume;
 import com.tokarevaa.webapp.serializer.StreamSerializer;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +15,7 @@ import java.util.Objects;
 
 public class FileStorage extends AbstractStorage<File> {
     private final File directory;
-    private StreamSerializer streamSerializer;
+    private final StreamSerializer streamSerializer;
 
     public FileStorage(File directory, StreamSerializer ss) {
         Objects.requireNonNull(directory, "Directory must not be null");
@@ -55,9 +58,7 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected void doDelete(File file) {
         try {
-            if (!file.delete()) {
-                throw new StorageException("Delete file error", file.getName());
-            }
+            file.delete();
         } catch (Exception e) {
             throw new StorageException("Delete file error", file.getName(), e);
         }
@@ -79,41 +80,31 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-        File[] files = directory.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                doDelete(file);
-            }
-        } else {
-            throw new StorageException("Directory read error", directory.getPath());
+        for (File file : getFiles()) {
+            doDelete(file);
         }
     }
 
     @Override
     public int size() {
-        if (directory != null) {
-            File[] files = directory.listFiles();
-            if (files != null) {
-                return files.length;
-            } else {
-                throw new StorageException("Directory read error", directory.getPath());
-            }
-        }
-        return 0;
+        return getFiles().length;
     }
 
     @Override
     public List<Resume> doGetAll() {
-        ArrayList<Resume> resumes = new ArrayList<>();
+        List<Resume> resumes = new ArrayList<>();
 
-        File[] files = directory.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                resumes.add(doGet(file));
-            }
-        } else {
-            throw new StorageException("Directory read error", directory.getPath());
+        for (File file : getFiles()) {
+            resumes.add(doGet(file));
         }
         return resumes;
+    }
+
+    public File[] getFiles() {
+        File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("Directory read error", directory.getPath());
+        }
+        return files;
     }
 }
