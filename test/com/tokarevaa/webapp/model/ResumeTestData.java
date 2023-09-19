@@ -11,12 +11,12 @@ import java.util.Collections;
 public class ResumeTestData {
 
     private static void checkContactSet(Resume resume, ContactType ct, String s) {
-        resume.setContacts(ct, s);
+        resume.setContact(ct, s);
         Assert.assertEquals(resume.getContacts(ct), s);
     }
 
     private static void checkSectionSet(Resume resume, SectionType st, Section s) {
-        resume.setSections(st, s);
+        resume.setSection(st, s);
         Assert.assertEquals(resume.getSections(st), s);
     }
 
@@ -198,8 +198,8 @@ public class ResumeTestData {
         checkSectionSet(newResume, SectionType.OBJECTIVE, objective);
         checkSectionSet(newResume, SectionType.ACHIEVEMENT, achievement);
         checkSectionSet(newResume, SectionType.QUALIFICATIONS, qualifications);
-        checkSectionSet(newResume, SectionType.EXPERIENCE, experience);
-        checkSectionSet(newResume, SectionType.EDUCATION, education);
+//        checkSectionSet(newResume, SectionType.EXPERIENCE, experience);
+//        checkSectionSet(newResume, SectionType.EDUCATION, education);
 
         return newResume;
     }

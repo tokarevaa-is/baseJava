@@ -1,5 +1,8 @@
 package com.tokarevaa.webapp.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.Map;
@@ -9,9 +12,11 @@ import java.util.UUID;
 /**
  * Initial resume class
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Resume implements Comparable<Resume>, Serializable {
-    private final String uuid;
-    private final String fullName;
+    private String uuid;
+    private String fullName;
     private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
     private final Map<SectionType, Section> sections = new EnumMap<>(SectionType.class);
 
@@ -24,7 +29,10 @@ public class Resume implements Comparable<Resume>, Serializable {
         this.fullName = fullName;
     }
 
-    public void setContacts(ContactType contact, String value) {
+    public Resume() {
+    }
+
+    public void setContact(ContactType contact, String value) {
         contacts.put(contact, value);
     }
 
@@ -36,7 +44,7 @@ public class Resume implements Comparable<Resume>, Serializable {
         return sections.get(section);
     }
 
-    public void setSections(SectionType section, Section value) {
+    public void setSection(SectionType section, Section value) {
         sections.put(section, value);
     }
 

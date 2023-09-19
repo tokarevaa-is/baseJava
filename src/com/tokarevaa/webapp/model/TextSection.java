@@ -3,10 +3,13 @@ package com.tokarevaa.webapp.model;
 import java.util.Objects;
 
 public class TextSection extends Section {
-    private final String content;
+    private String content;
 
     public TextSection(String content) {
         this.content = content;
+    }
+
+    public TextSection() {
     }
 
     @Override
@@ -29,5 +32,15 @@ public class TextSection extends Section {
     @Override
     public String toString() {
         return content;
+    }
+
+    @Override
+    public void parseJson(String json) {
+        content = json;
+    }
+
+    @Override
+    public String toGson() {
+        return content != null ? content : "";
     }
 }

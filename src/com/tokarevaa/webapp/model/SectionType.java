@@ -1,20 +1,26 @@
 package com.tokarevaa.webapp.model;
 
 public enum SectionType {
-    PERSONAL("Личные качества"),
-    OBJECTIVE("Позиция"),
-    ACHIEVEMENT("Достижения"),
-    QUALIFICATIONS("Квалификация"),
-    EXPERIENCE("Опыт работы"),
-    EDUCATION("Образование");
+    PERSONAL("Личные качества", TextSection.class),
+    OBJECTIVE("Позиция", TextSection.class),
+    ACHIEVEMENT("Достижения", ListSection.class),
+    QUALIFICATIONS("Квалификация", ListSection.class),
+    EXPERIENCE("Опыт работы", OrganizationSection.class),
+    EDUCATION("Образование", OrganizationSection.class);
 
     private final String title;
+    private final Class<? extends Section> sectionClass;
 
-    SectionType(String title) {
+    SectionType(String title, Class clazz) {
         this.title = title;
+        this.sectionClass = clazz;
     }
 
     public String getTitle() {
         return title;
+    }
+
+    public Class<? extends Section> getSection() {
+        return sectionClass;
     }
 }

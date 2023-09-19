@@ -1,13 +1,20 @@
 package com.tokarevaa.webapp.model;
 
+import com.tokarevaa.webapp.util.DataParser;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 public class ListSection extends Section {
-    private final List<String> items;
+    private List<String> items;
 
     public ListSection(List<String> items) {
         this.items = items;
+    }
+
+    public ListSection() {
     }
 
     @Override
@@ -30,5 +37,32 @@ public class ListSection extends Section {
     @Override
     public int hashCode() {
         return items.hashCode();
+    }
+
+    @Override
+    public void parseJson(String json) {
+        String newValue = DataParser.extractArray(json);
+
+        String[] textList = DataParser.parseArray(newValue);
+
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+        Collections.addAll(items, textList);
+    }
+
+    @Override
+    public String toGson() {
+        String json = "";
+        for (String text : items) {
+            json = json + ", {" + text + "}";
+        }
+
+        if (json != "") {
+            json = json.substring(2);
+        }
+        json = "[" + json + "]";
+
+        return json;
     }
 }

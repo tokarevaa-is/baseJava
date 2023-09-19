@@ -1,13 +1,18 @@
 package com.tokarevaa.webapp.model;
 
+import com.tokarevaa.webapp.util.DataParser;
+
 import java.util.List;
 import java.util.Objects;
 
 public class OrganizationSection extends Section {
-    private final List<Organization> organizationList;
+    private List<Organization> organizationList;
 
     public OrganizationSection(List<Organization> organizationList) {
         this.organizationList = organizationList;
+    }
+
+    public OrganizationSection() {
     }
 
     @Override
@@ -30,5 +35,27 @@ public class OrganizationSection extends Section {
     @Override
     public String toString() {
         return organizationList.toString();
+    }
+
+    @Override
+    public void parseJson(String json) {
+        String[] newOrganization = DataParser.parseArray(DataParser.extractArray(json));
+    }
+
+    @Override
+    public String toGson() {
+        String json = "";
+
+        for (Organization org : organizationList) {
+            json = json + ", {" + org.toJson() + "}";
+        }
+
+        if (json != "") {
+            json = json.substring(2);
+        }
+
+        json = "[" + json + "]";
+
+        return json;
     }
 }

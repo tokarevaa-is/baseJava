@@ -1,4 +1,4 @@
-package com.tokarevaa.webapp.assist;
+package com.tokarevaa.webapp.util;
 
 public class Assistant {
     public static int getObjectHash(Object o) {

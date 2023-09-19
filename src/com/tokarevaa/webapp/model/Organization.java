@@ -1,17 +1,22 @@
 package com.tokarevaa.webapp.model;
 
-import com.tokarevaa.webapp.assist.Assistant;
+import com.tokarevaa.webapp.util.Assistant;
+import com.tokarevaa.webapp.util.LocalDateAdapter;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
 
-    private final String title;
-    private final String link;
-    private final List<Position> stage;
+    private String title;
+    private String link;
+    private List<Position> stage;
 
     public Organization(String title, String link, List<Position> stage) {
         Objects.requireNonNull(title, "Title must not be null");
@@ -20,6 +25,9 @@ public class Organization implements Serializable {
         this.title = title;
         this.link = link;
         this.stage = stage;
+    }
+
+    public Organization() {
     }
 
     @Override
@@ -49,18 +57,42 @@ public class Organization implements Serializable {
         return String.format("Organization {Title: %s, Link: %s, Stages: {%s}", title, link, stage);
     }
 
+    public String toJson() {
+        return String.format("{%s}, {%s}, {[%s]}", title, link, stageToJson());
+    }
+
+    private String stageToJson() {
+        String json = "";
+
+        for (Position position : stage) {
+            json = json + ", {" + position.toJson() + "}";
+        }
+
+        if (json != "") {
+            json = json.substring(2);
+        }
+
+        return json;
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
     public static class Position implements Serializable {
 
-        private final String position;
-        private final String description;
-        private final LocalDate dateFrom;
-        private final LocalDate dateTo;
+        private String position;
+        private String description;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        private LocalDate dateFrom;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        private LocalDate dateTo;
 
         public Position(String position, String description, LocalDate dateFrom, LocalDate dateTo) {
             this.position = position;
             this.description = description;
             this.dateFrom = dateFrom;
             this.dateTo = dateTo;
+        }
+
+        public Position() {
         }
 
         @Override
@@ -102,6 +134,11 @@ public class Organization implements Serializable {
         @Override
         public String toString() {
             return String.format("Position: %s, from: %s, to: %s", position, dateFrom.toString(), dateTo.toString());
+        }
+
+        public String toJson() {
+            return String.format("{%s}, {%s}, {%s}, {%s}",
+                    position, description, dateFrom, dateTo);
         }
     }
 }
