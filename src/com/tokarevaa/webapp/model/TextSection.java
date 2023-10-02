@@ -1,5 +1,8 @@
 package com.tokarevaa.webapp.model;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Objects;
 
 public class TextSection extends Section {
@@ -35,12 +38,16 @@ public class TextSection extends Section {
     }
 
     @Override
-    public void parseJson(String json) {
-        content = json;
+    public void writeData(DataOutputStream dos) throws IOException {
+        if (content == null) {
+            dos.writeUTF("");
+        } else {
+            dos.writeUTF(content);
+        }
     }
 
     @Override
-    public String toGson() {
-        return content != null ? content : "";
+    public void readData(DataInputStream dis) throws IOException {
+        content = dis.readUTF();
     }
 }

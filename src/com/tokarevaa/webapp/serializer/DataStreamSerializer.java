@@ -25,8 +25,9 @@ public class DataStreamSerializer implements StreamSerializer {
 
             Map<SectionType, Section> sections = resume.getSections();
             for (SectionType st : SectionType.values()) {
-                if (sections.get(st) != null)   //$$$
-                    dos.writeUTF(sections.get(st).toGson());
+                if (sections.get(st) != null) {
+                    sections.get(st).writeData(dos);
+                }
             }
         }
     }
@@ -51,13 +52,11 @@ public class DataStreamSerializer implements StreamSerializer {
                 try {
                     section = st.getSection().newInstance();
                     if (section != null) {
-                        section.parseJson(dis.readUTF());
+                        section.readData(dis);
                         resume.setSection(st, section);
                     }
                 } catch (InstantiationException | IllegalAccessException e) {
                     throw new StorageException("Error, while parsing JSON", null, e);
-                } catch (EOFException e) {
-                    break;
                 }
             }
             return resume;

@@ -1,7 +1,9 @@
 package com.tokarevaa.webapp.model;
 
-import com.tokarevaa.webapp.util.DataParser;
-
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,24 +40,23 @@ public class OrganizationSection extends Section {
     }
 
     @Override
-    public void parseJson(String json) {
-        String[] newOrganization = DataParser.parseArray(DataParser.extractArray(json));
+    public void writeData(DataOutputStream dos) throws IOException {
+        dos.writeInt(organizationList.size());
+        for (Organization org : organizationList) {
+            org.writeData(dos);
+        }
     }
 
     @Override
-    public String toGson() {
-        String json = "";
+    public void readData(DataInputStream dis) throws IOException {
+        int count = dis.readInt();
+        organizationList = new ArrayList<>();
 
-        for (Organization org : organizationList) {
-            json = json + ", {" + org.toJson() + "}";
+        while (count > 0){
+            Organization organization = new Organization();
+            organization.readData(dis);
+            organizationList.add(organization);
+            count--;
         }
-
-        if (json != "") {
-            json = json.substring(2);
-        }
-
-        json = "[" + json + "]";
-
-        return json;
     }
 }

@@ -1,9 +1,9 @@
 package com.tokarevaa.webapp.model;
 
-import com.tokarevaa.webapp.util.DataParser;
-
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,29 +40,23 @@ public class ListSection extends Section {
     }
 
     @Override
-    public void parseJson(String json) {
-        String newValue = DataParser.extractArray(json);
-
-        String[] textList = DataParser.parseArray(newValue);
-
-        if (items == null) {
-            items = new ArrayList<>();
+    public void writeData(DataOutputStream dos) throws IOException {
+        dos.writeInt(items.size());
+        for (String item : items) {
+            dos.writeUTF(item);
         }
-        Collections.addAll(items, textList);
     }
 
     @Override
-    public String toGson() {
-        String json = "";
-        for (String text : items) {
-            json = json + ", {" + text + "}";
+    public void readData(DataInputStream dis) throws IOException {
+        int count = dis.readInt();
+        if (items == null) {
+            items = new ArrayList<>();
         }
 
-        if (json != "") {
-            json = json.substring(2);
+        while (count > 0) {
+            items.add(dis.readUTF());
+            count--;
         }
-        json = "[" + json + "]";
-
-        return json;
     }
 }

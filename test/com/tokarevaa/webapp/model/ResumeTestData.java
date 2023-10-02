@@ -198,8 +198,8 @@ public class ResumeTestData {
         checkSectionSet(newResume, SectionType.OBJECTIVE, objective);
         checkSectionSet(newResume, SectionType.ACHIEVEMENT, achievement);
         checkSectionSet(newResume, SectionType.QUALIFICATIONS, qualifications);
-//        checkSectionSet(newResume, SectionType.EXPERIENCE, experience);
-//        checkSectionSet(newResume, SectionType.EDUCATION, education);
+        checkSectionSet(newResume, SectionType.EXPERIENCE, experience);
+        checkSectionSet(newResume, SectionType.EDUCATION, education);
 
         return newResume;
     }

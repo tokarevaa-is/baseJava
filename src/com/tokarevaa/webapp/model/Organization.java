@@ -6,8 +6,12 @@ import com.tokarevaa.webapp.util.LocalDateAdapter;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -57,22 +61,24 @@ public class Organization implements Serializable {
         return String.format("Organization {Title: %s, Link: %s, Stages: {%s}", title, link, stage);
     }
 
-    public String toJson() {
-        return String.format("{%s}, {%s}, {[%s]}", title, link, stageToJson());
+    public void writeData(DataOutputStream dos) throws IOException {
+        dos.writeUTF(title);
+        dos.writeUTF(link);
+        dos.writeInt(stage.size());
+        for (Position position : stage) {
+            position.writePeriod(dos);
+        }
     }
 
-    private String stageToJson() {
-        String json = "";
-
-        for (Position position : stage) {
-            json = json + ", {" + position.toJson() + "}";
+    public void readData(DataInputStream dis) throws IOException {
+        title = dis.readUTF();
+        link = dis.readUTF();
+        int count = dis.readInt();
+        stage = new ArrayList<>();
+        while (count > 0) {
+            stage.add(new Position(dis.readUTF(), dis.readUTF(), LocalDate.parse(dis.readUTF()), LocalDate.parse(dis.readUTF())));
+            count--;
         }
-
-        if (json != "") {
-            json = json.substring(2);
-        }
-
-        return json;
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -136,9 +142,11 @@ public class Organization implements Serializable {
             return String.format("Position: %s, from: %s, to: %s", position, dateFrom.toString(), dateTo.toString());
         }
 
-        public String toJson() {
-            return String.format("{%s}, {%s}, {%s}, {%s}",
-                    position, description, dateFrom, dateTo);
+        public void writePeriod(DataOutputStream dos) throws IOException {
+            dos.writeUTF(this.position);
+            dos.writeUTF(this.description);
+            dos.writeUTF(String.valueOf(this.dateFrom));
+            dos.writeUTF(String.valueOf(this.dateTo));
         }
     }
 }
