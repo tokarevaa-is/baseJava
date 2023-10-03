@@ -1,8 +1,5 @@
 package com.tokarevaa.webapp.model;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.Objects;
 
 public class TextSection extends Section {
@@ -28,26 +25,8 @@ public class TextSection extends Section {
         return Objects.equals(content, that.content);
     }
 
-    public String getContent() {
-        return content;
-    }
-
     @Override
     public String toString() {
-        return content;
-    }
-
-    @Override
-    public void writeData(DataOutputStream dos) throws IOException {
-        if (content == null) {
-            dos.writeUTF("");
-        } else {
-            dos.writeUTF(content);
-        }
-    }
-
-    @Override
-    public void readData(DataInputStream dis) throws IOException {
-        content = dis.readUTF();
+        return content != null ? content : "";
     }
 }

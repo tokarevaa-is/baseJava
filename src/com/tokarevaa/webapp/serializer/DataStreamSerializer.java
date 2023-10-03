@@ -1,12 +1,11 @@
 package com.tokarevaa.webapp.serializer;
 
-import com.tokarevaa.webapp.exception.StorageException;
-import com.tokarevaa.webapp.model.ContactType;
-import com.tokarevaa.webapp.model.Resume;
-import com.tokarevaa.webapp.model.Section;
-import com.tokarevaa.webapp.model.SectionType;
+import com.tokarevaa.webapp.model.*;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class DataStreamSerializer implements StreamSerializer {
@@ -26,7 +25,34 @@ public class DataStreamSerializer implements StreamSerializer {
             Map<SectionType, Section> sections = resume.getSections();
             for (SectionType st : SectionType.values()) {
                 if (sections.get(st) != null) {
-                    sections.get(st).writeData(dos);
+                    if (sections.get(st).getClass() == TextSection.class) {
+                        TextSection ts = (TextSection) sections.get(st);
+                        dos.writeUTF(ts.toString());
+
+                    } else if (sections.get(st).getClass() == ListSection.class) {
+                        ListSection ls = (ListSection) sections.get(st);
+                        List<String> items = ls.getItems();
+                        dos.writeInt(items.size());
+                        for (String item : items) {
+                            dos.writeUTF(item);
+                        }
+
+                    } else if (sections.get(st).getClass() == OrganizationSection.class) {
+                        OrganizationSection org = (OrganizationSection) sections.get(st);
+                        dos.writeInt(org.getItems().size());
+                        for (Organization organization : org.getItems()) {
+                            dos.writeUTF(organization.getTitle());
+                            dos.writeUTF(organization.getLink());
+                            List<Organization.Position> positions = organization.getPositions();
+                            dos.writeInt(positions.size());
+                            for (Organization.Position position : positions) {
+                                dos.writeUTF(position.getPosition());
+                                dos.writeUTF(position.getDescription());
+                                dos.writeUTF(String.valueOf(position.getDateFrom()));
+                                dos.writeUTF(String.valueOf(position.getDateTo()));
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -49,15 +75,37 @@ public class DataStreamSerializer implements StreamSerializer {
             for (SectionType st : SectionType.values()) {
 
                 Section section = null;
-                try {
-                    section = st.getSection().newInstance();
-                    if (section != null) {
-                        section.readData(dis);
-                        resume.setSection(st, section);
+
+                if (st.getSection() == TextSection.class) {
+                    section = new TextSection(dis.readUTF());
+
+                } else if (st.getSection() == ListSection.class) {
+                    section = new ListSection();
+                    int count = dis.readInt();
+                    while (count > 0) {
+                        ((ListSection) section).add(dis.readUTF());
+                        count--;
                     }
-                } catch (InstantiationException | IllegalAccessException e) {
-                    throw new StorageException("Error, while parsing JSON", null, e);
+
+                } else if (st.getSection() == OrganizationSection.class) {
+                    section = new OrganizationSection();
+
+                    int count = dis.readInt();
+                    while (count > 0) {
+                        List<Organization.Position> positions = new ArrayList<>();
+                        Organization organization = new Organization(dis.readUTF(), dis.readUTF(), positions);
+
+                        int positionCount = dis.readInt();
+                        while (positionCount > 0) {
+                            positions.add(new Organization.Position(dis.readUTF(), dis.readUTF(), LocalDate.parse(dis.readUTF()), LocalDate.parse(dis.readUTF())));
+                            positionCount--;
+                        }
+
+                        ((OrganizationSection) section).add(organization);
+                        count--;
+                    }
                 }
+                resume.setSection(st, section);
             }
             return resume;
         }

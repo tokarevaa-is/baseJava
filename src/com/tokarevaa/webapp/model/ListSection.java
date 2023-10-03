@@ -1,20 +1,18 @@
 package com.tokarevaa.webapp.model;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class ListSection extends Section {
-    private List<String> items;
+    private final List<String> items;
 
     public ListSection(List<String> items) {
         this.items = items;
     }
 
     public ListSection() {
+        items = new ArrayList<>();
     }
 
     @Override
@@ -39,24 +37,22 @@ public class ListSection extends Section {
         return items.hashCode();
     }
 
-    @Override
-    public void writeData(DataOutputStream dos) throws IOException {
-        dos.writeInt(items.size());
-        for (String item : items) {
-            dos.writeUTF(item);
+    public void add(String string) {
+        if (string != null) {
+            items.add(string);
         }
     }
-
-    @Override
-    public void readData(DataInputStream dis) throws IOException {
-        int count = dis.readInt();
-        if (items == null) {
-            items = new ArrayList<>();
-        }
-
-        while (count > 0) {
-            items.add(dis.readUTF());
-            count--;
-        }
-    }
+//
+//    @Override
+//    public void readData(DataInputStream dis) throws IOException {
+//        int count = dis.readInt();
+//        if (items == null) {
+//            items = new ArrayList<>();
+//        }
+//
+//        while (count > 0) {
+//            items.add(dis.readUTF());
+//            count--;
+//        }
+//    }
 }
