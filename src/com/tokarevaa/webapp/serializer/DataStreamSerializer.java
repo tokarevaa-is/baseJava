@@ -24,7 +24,9 @@ public class DataStreamSerializer implements StreamSerializer {
 
             Map<SectionType, Section> sections = resume.getSections();
             for (SectionType st : SectionType.values()) {
+                dos.writeUTF(st.name());
                 if (sections.get(st) != null) {
+                    dos.writeInt(1);
                     if (sections.get(st).getClass() == TextSection.class) {
                         TextSection ts = (TextSection) sections.get(st);
                         dos.writeUTF(ts.toString());
@@ -53,6 +55,8 @@ public class DataStreamSerializer implements StreamSerializer {
                             }
                         }
                     }
+                } else {
+                    dos.writeInt(0);
                 }
             }
         }
@@ -71,41 +75,58 @@ public class DataStreamSerializer implements StreamSerializer {
                 String value = dis.readUTF();
                 resume.setContact(contactType, value);
             }
+            boolean eof = false;
 
-            for (SectionType st : SectionType.values()) {
+            while (!eof){
+                try {
+                    String sectionType = dis.readUTF();
+                    if (dis.readInt() == 1) {
 
-                Section section = null;
+                        SectionType st = SectionType.valueOf(sectionType);
 
-                if (st.getSection() == TextSection.class) {
-                    section = new TextSection(dis.readUTF());
+                        Section section = null;
 
-                } else if (st.getSection() == ListSection.class) {
-                    section = new ListSection();
-                    int count = dis.readInt();
-                    while (count > 0) {
-                        ((ListSection) section).add(dis.readUTF());
-                        count--;
-                    }
+                        switch (st) {
+                            case PERSONAL:
+                            case OBJECTIVE:
+                                section = new TextSection(dis.readUTF());
+                                break;
 
-                } else if (st.getSection() == OrganizationSection.class) {
-                    section = new OrganizationSection();
+                            case ACHIEVEMENT:
+                            case QUALIFICATIONS:
+                                section = new ListSection();
+                                int count = dis.readInt();
+                                while (count > 0) {
+                                    ((ListSection) section).add(dis.readUTF());
+                                    count--;
+                                }
+                                break;
 
-                    int count = dis.readInt();
-                    while (count > 0) {
-                        List<Organization.Position> positions = new ArrayList<>();
-                        Organization organization = new Organization(dis.readUTF(), dis.readUTF(), positions);
+                            case EXPERIENCE:
+                            case EDUCATION:
+                                section = new OrganizationSection();
 
-                        int positionCount = dis.readInt();
-                        while (positionCount > 0) {
-                            positions.add(new Organization.Position(dis.readUTF(), dis.readUTF(), LocalDate.parse(dis.readUTF()), LocalDate.parse(dis.readUTF())));
-                            positionCount--;
+                                count = dis.readInt();
+                                while (count > 0) {
+                                    List<Organization.Position> positions = new ArrayList<>();
+                                    Organization organization = new Organization(dis.readUTF(), dis.readUTF(), positions);
+
+                                    int positionCount = dis.readInt();
+                                    while (positionCount > 0) {
+                                        positions.add(new Organization.Position(dis.readUTF(), dis.readUTF(), LocalDate.parse(dis.readUTF()), LocalDate.parse(dis.readUTF())));
+                                        positionCount--;
+                                    }
+
+                                    ((OrganizationSection) section).add(organization);
+                                    count--;
+                                }
+                                break;
                         }
-
-                        ((OrganizationSection) section).add(organization);
-                        count--;
+                        resume.setSection(st, section);
                     }
+                } catch (EOFException e) {
+                    eof = true;
                 }
-                resume.setSection(st, section);
             }
             return resume;
         }
