@@ -6,7 +6,8 @@ public class TextSection extends Section {
     private String content;
 
     public TextSection(String content) {
-        this.content = content;
+        if (content != null) this.content = content;
+        else this.content = "";
     }
 
     public TextSection() {
