@@ -23,24 +23,29 @@ public class DataStreamSerializer implements StreamSerializer {
             }
 
             Map<SectionType, Section> sections = resume.getSections();
-            for (SectionType st : SectionType.values()) {
-                dos.writeUTF(st.name());
-                if (sections.get(st) != null) {
-                    dos.writeInt(1);
-                    if (sections.get(st).getClass() == TextSection.class) {
-                        TextSection ts = (TextSection) sections.get(st);
-                        dos.writeUTF(ts.toString());
+            dos.writeInt(sections.size());
+            for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
+                SectionType sectionType = SectionType.valueOf(entry.getKey().name());
+                dos.writeUTF(sectionType.name());
+                switch (sectionType) {
+                    case PERSONAL:
+                    case OBJECTIVE:
+                        dos.writeUTF(entry.getValue().toString());
+                        break;
 
-                    } else if (sections.get(st).getClass() == ListSection.class) {
-                        ListSection ls = (ListSection) sections.get(st);
+                    case QUALIFICATIONS:
+                    case ACHIEVEMENT:
+                        ListSection ls = (ListSection) entry.getValue();
                         List<String> items = ls.getItems();
                         dos.writeInt(items.size());
                         for (String item : items) {
                             dos.writeUTF(item);
                         }
+                        break;
 
-                    } else if (sections.get(st).getClass() == OrganizationSection.class) {
-                        OrganizationSection org = (OrganizationSection) sections.get(st);
+                    case EDUCATION:
+                    case EXPERIENCE:
+                        OrganizationSection org = (OrganizationSection) entry.getValue();
                         dos.writeInt(org.getItems().size());
                         for (Organization organization : org.getItems()) {
                             dos.writeUTF(organization.getTitle());
@@ -54,9 +59,7 @@ public class DataStreamSerializer implements StreamSerializer {
                                 dos.writeUTF(String.valueOf(position.getDateTo()));
                             }
                         }
-                    }
-                } else {
-                    dos.writeInt(0);
+                        break;
                 }
             }
         }
@@ -75,58 +78,52 @@ public class DataStreamSerializer implements StreamSerializer {
                 String value = dis.readUTF();
                 resume.setContact(contactType, value);
             }
-            boolean eof = false;
 
-            while (!eof){
-                try {
-                    String sectionType = dis.readUTF();
-                    if (dis.readInt() == 1) {
+            size = dis.readInt();
+            for (int i = 0; i < size; i++) {
+                String sectionType = dis.readUTF();
 
-                        SectionType st = SectionType.valueOf(sectionType);
+                SectionType st = SectionType.valueOf(sectionType);
 
-                        Section section = null;
+                Section section = null;
 
-                        switch (st) {
-                            case PERSONAL:
-                            case OBJECTIVE:
-                                section = new TextSection(dis.readUTF());
-                                break;
+                switch (st) {
+                    case PERSONAL:
+                    case OBJECTIVE:
+                        section = new TextSection(dis.readUTF());
+                        break;
 
-                            case ACHIEVEMENT:
-                            case QUALIFICATIONS:
-                                section = new ListSection();
-                                int count = dis.readInt();
-                                while (count > 0) {
-                                    ((ListSection) section).add(dis.readUTF());
-                                    count--;
-                                }
-                                break;
-
-                            case EXPERIENCE:
-                            case EDUCATION:
-                                section = new OrganizationSection();
-
-                                count = dis.readInt();
-                                while (count > 0) {
-                                    List<Organization.Position> positions = new ArrayList<>();
-                                    Organization organization = new Organization(dis.readUTF(), dis.readUTF(), positions);
-
-                                    int positionCount = dis.readInt();
-                                    while (positionCount > 0) {
-                                        positions.add(new Organization.Position(dis.readUTF(), dis.readUTF(), LocalDate.parse(dis.readUTF()), LocalDate.parse(dis.readUTF())));
-                                        positionCount--;
-                                    }
-
-                                    ((OrganizationSection) section).add(organization);
-                                    count--;
-                                }
-                                break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        section = new ListSection();
+                        int count = dis.readInt();
+                        while (count > 0) {
+                            ((ListSection) section).add(dis.readUTF());
+                            count--;
                         }
-                        resume.setSection(st, section);
-                    }
-                } catch (EOFException e) {
-                    eof = true;
+                        break;
+
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        section = new OrganizationSection();
+
+                        count = dis.readInt();
+                        while (count > 0) {
+                            List<Organization.Position> positions = new ArrayList<>();
+                            Organization organization = new Organization(dis.readUTF(), dis.readUTF(), positions);
+
+                            int positionCount = dis.readInt();
+                            while (positionCount > 0) {
+                                positions.add(new Organization.Position(dis.readUTF(), dis.readUTF(), LocalDate.parse(dis.readUTF()), LocalDate.parse(dis.readUTF())));
+                                positionCount--;
+                            }
+
+                            ((OrganizationSection) section).add(organization);
+                            count--;
+                        }
+                        break;
                 }
+                resume.setSection(st, section);
             }
             return resume;
         }
