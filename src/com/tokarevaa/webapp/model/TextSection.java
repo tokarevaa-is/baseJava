@@ -13,6 +13,10 @@ public class TextSection extends Section {
     public TextSection() {
     }
 
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     @Override
     public int hashCode() {
         return content.hashCode();

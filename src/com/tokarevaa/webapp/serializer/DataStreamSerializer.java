@@ -14,14 +14,12 @@ public class DataStreamSerializer implements StreamSerializer {
         try (DataOutputStream dos = new DataOutputStream(os)) {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
-
             Map<ContactType, String> contacts = resume.getContacts();
             dos.writeInt(contacts.size());
             for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
                 dos.writeUTF(entry.getKey().name());
                 dos.writeUTF(entry.getValue());
             }
-
             Map<SectionType, Section> sections = resume.getSections();
             dos.writeInt(sections.size());
             for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
@@ -82,50 +80,43 @@ public class DataStreamSerializer implements StreamSerializer {
             size = dis.readInt();
             for (int i = 0; i < size; i++) {
                 String sectionType = dis.readUTF();
-
                 SectionType st = SectionType.valueOf(sectionType);
-
-                Section section = null;
+                Section section = st.getSection().newInstance();
 
                 switch (st) {
                     case PERSONAL:
                     case OBJECTIVE:
-                        section = new TextSection(dis.readUTF());
+                        ((TextSection) section).setContent(dis.readUTF());
                         break;
 
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        section = new ListSection();
                         int count = dis.readInt();
-                        while (count > 0) {
+                        for (int j = 0; j < count; j++) {
                             ((ListSection) section).add(dis.readUTF());
-                            count--;
                         }
                         break;
 
                     case EXPERIENCE:
                     case EDUCATION:
-                        section = new OrganizationSection();
-
                         count = dis.readInt();
-                        while (count > 0) {
+                        for (int j = 0; j < count; j++) {
                             List<Organization.Position> positions = new ArrayList<>();
                             Organization organization = new Organization(dis.readUTF(), dis.readUTF(), positions);
-
                             int positionCount = dis.readInt();
                             while (positionCount > 0) {
                                 positions.add(new Organization.Position(dis.readUTF(), dis.readUTF(), LocalDate.parse(dis.readUTF()), LocalDate.parse(dis.readUTF())));
                                 positionCount--;
                             }
-
                             ((OrganizationSection) section).add(organization);
-                            count--;
                         }
                         break;
                 }
                 resume.setSection(st, section);
             }
             return resume;
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 }
