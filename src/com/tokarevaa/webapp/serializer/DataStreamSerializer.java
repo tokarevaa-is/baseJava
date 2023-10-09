@@ -9,10 +9,11 @@ import java.util.function.Consumer;
 
 public class DataStreamSerializer implements StreamSerializer {
 
-    private void writeCollectionWithException(Set<Map.Entry<ContactType, String>> collection, Consumer<Map.Entry<ContactType, String>> consumer) throws Exception {
+    private <T> void writeCollectionWithException(Collection<T> collection, Consumer<T> consumer, DataOutputStream dos) throws Exception {
         Objects.requireNonNull(collection);
         Objects.requireNonNull(consumer);
-        for (Map.Entry<ContactType, String> entry : collection) {
+        dos.writeInt(collection.size());
+        for (T entry : collection) {
             try {
                 consumer.accept(entry);
             } catch (Exception e) {
@@ -27,7 +28,6 @@ public class DataStreamSerializer implements StreamSerializer {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
             Map<ContactType, String> contacts = resume.getContacts();
-            dos.writeInt(contacts.size());
             Consumer<Map.Entry<ContactType, String>> consumer = o -> {
                 try {
                     dos.writeUTF(o.getKey().name());
@@ -36,7 +36,7 @@ public class DataStreamSerializer implements StreamSerializer {
                     throw new RuntimeException(e);
                 }
             };
-            writeCollectionWithException(contacts.entrySet(), consumer);
+            writeCollectionWithException(contacts.entrySet(), consumer, dos);
             Map<SectionType, Section> sections = resume.getSections();
             dos.writeInt(sections.size());
             for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
@@ -139,3 +139,4 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 }
+
