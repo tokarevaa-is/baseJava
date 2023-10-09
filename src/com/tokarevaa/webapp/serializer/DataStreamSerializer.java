@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 
 public class DataStreamSerializer implements StreamSerializer {
 
-    private void forEachCollection(Set<Map.Entry<ContactType, String>> collection, Consumer<Map.Entry<ContactType, String>> consumer) throws Exception {
+    private void writeCollectionWithException(Set<Map.Entry<ContactType, String>> collection, Consumer<Map.Entry<ContactType, String>> consumer) throws Exception {
         Objects.requireNonNull(collection);
         Objects.requireNonNull(consumer);
         for (Map.Entry<ContactType, String> entry : collection) {
@@ -36,7 +36,7 @@ public class DataStreamSerializer implements StreamSerializer {
                     throw new RuntimeException(e);
                 }
             };
-            forEachCollection(contacts.entrySet(), consumer);
+            writeCollectionWithException(contacts.entrySet(), consumer);
             Map<SectionType, Section> sections = resume.getSections();
             dos.writeInt(sections.size());
             for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
