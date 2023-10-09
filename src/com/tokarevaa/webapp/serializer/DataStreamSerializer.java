@@ -4,11 +4,23 @@ import com.tokarevaa.webapp.model.*;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
 
 public class DataStreamSerializer implements StreamSerializer {
+
+    private void forEachCollection(Set<Map.Entry<ContactType, String>> collection, Consumer<Map.Entry<ContactType, String>> consumer) throws Exception {
+        Objects.requireNonNull(collection);
+        Objects.requireNonNull(consumer);
+        for (Map.Entry<ContactType, String> entry : collection) {
+            try {
+                consumer.accept(entry);
+            } catch (Exception e) {
+                throw new Exception(e);
+            }
+        }
+    }
+
     @Override
     public void doWrite(OutputStream os, Resume resume) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(os)) {
@@ -16,10 +28,15 @@ public class DataStreamSerializer implements StreamSerializer {
             dos.writeUTF(resume.getFullName());
             Map<ContactType, String> contacts = resume.getContacts();
             dos.writeInt(contacts.size());
-            for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
-                dos.writeUTF(entry.getKey().name());
-                dos.writeUTF(entry.getValue());
-            }
+            Consumer<Map.Entry<ContactType, String>> consumer = o -> {
+                try {
+                    dos.writeUTF(o.getKey().name());
+                    dos.writeUTF(o.getValue());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            };
+            forEachCollection(contacts.entrySet(), consumer);
             Map<SectionType, Section> sections = resume.getSections();
             dos.writeInt(sections.size());
             for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
@@ -60,6 +77,8 @@ public class DataStreamSerializer implements StreamSerializer {
                         break;
                 }
             }
+        } catch (Exception e) {
+            throw new IOException(e);
         }
     }
 
@@ -91,16 +110,16 @@ public class DataStreamSerializer implements StreamSerializer {
 
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        int count = dis.readInt();
-                        for (int j = 0; j < count; j++) {
+                        int countQualification = dis.readInt();
+                        for (int j = 0; j < countQualification; j++) {
                             ((ListSection) section).add(dis.readUTF());
                         }
                         break;
 
                     case EXPERIENCE:
                     case EDUCATION:
-                        count = dis.readInt();
-                        for (int j = 0; j < count; j++) {
+                        int countEducation = dis.readInt();
+                        for (int j = 0; j < countEducation; j++) {
                             List<Organization.Position> positions = new ArrayList<>();
                             Organization organization = new Organization(dis.readUTF(), dis.readUTF(), positions);
                             int positionCount = dis.readInt();
