@@ -5,6 +5,7 @@ import com.tokarevaa.webapp.model.*;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -21,19 +22,19 @@ public class DataStreamSerializer implements StreamSerializer {
                 dos.writeUTF(o.getValue());
             });
             Map<SectionType, Section> sections = resume.getSections();
-            dos.writeInt(sections.size());
-            for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
-                SectionType sectionType = SectionType.valueOf(entry.getKey().name());
+
+            CustomConsumer.writeWithException(sections.entrySet(), dos, o -> {
+                SectionType sectionType = SectionType.valueOf(o.getKey().name());
                 dos.writeUTF(sectionType.name());
                 switch (sectionType) {
                     case PERSONAL:
                     case OBJECTIVE:
-                        dos.writeUTF(entry.getValue().toString());
+                        dos.writeUTF(o.getValue().toString());
                         break;
 
                     case QUALIFICATIONS:
                     case ACHIEVEMENT:
-                        ListSection ls = (ListSection) entry.getValue();
+                        ListSection ls = (ListSection) o.getValue();
                         List<String> items = ls.getItems();
                         dos.writeInt(items.size());
                         for (String item : items) {
@@ -43,7 +44,7 @@ public class DataStreamSerializer implements StreamSerializer {
 
                     case EDUCATION:
                     case EXPERIENCE:
-                        OrganizationSection org = (OrganizationSection) entry.getValue();
+                        OrganizationSection org = (OrganizationSection) o.getValue();
                         dos.writeInt(org.getItems().size());
                         for (Organization organization : org.getItems()) {
                             dos.writeUTF(organization.getTitle());
@@ -59,7 +60,7 @@ public class DataStreamSerializer implements StreamSerializer {
                         }
                         break;
                 }
-            }
+            });
         } catch (Exception e) {
             throw new IOException(e);
         }
@@ -119,6 +120,24 @@ public class DataStreamSerializer implements StreamSerializer {
             return resume;
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @FunctionalInterface
+    interface CustomConsumerInterface<T> {
+        void accept(T t) throws IOException;
+    }
+    public static class CustomConsumer implements CustomConsumerInterface {
+
+        public static <T> void writeWithException(Collection<T> collection, DataOutputStream dos, CustomConsumerInterface<T> consumer) throws Exception {
+            dos.writeInt(collection.size());
+            for (T item : collection) {
+                consumer.accept(item);
+            }
+        }
+
+        @Override
+        public void accept(Object o) throws IOException {
         }
     }
 }
