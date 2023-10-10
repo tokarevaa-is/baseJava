@@ -4,23 +4,11 @@ import com.tokarevaa.webapp.model.*;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class DataStreamSerializer implements StreamSerializer {
-
-    private <T> void writeCollectionWithException(Collection<T> collection, Consumer<T> consumer, DataOutputStream dos) throws Exception {
-        Objects.requireNonNull(collection);
-        Objects.requireNonNull(consumer);
-        dos.writeInt(collection.size());
-        for (T entry : collection) {
-            try {
-                consumer.accept(entry);
-            } catch (Exception e) {
-                throw new Exception(e);
-            }
-        }
-    }
 
     @Override
     public void doWrite(OutputStream os, Resume resume) throws IOException {
@@ -28,15 +16,10 @@ public class DataStreamSerializer implements StreamSerializer {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
             Map<ContactType, String> contacts = resume.getContacts();
-            Consumer<Map.Entry<ContactType, String>> consumer = o -> {
-                try {
-                    dos.writeUTF(o.getKey().name());
-                    dos.writeUTF(o.getValue());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            };
-            writeCollectionWithException(contacts.entrySet(), consumer, dos);
+            CustomConsumer.writeWithException(contacts.entrySet(), dos, o -> {
+                dos.writeUTF(o.getKey().name());
+                dos.writeUTF(o.getValue());
+            });
             Map<SectionType, Section> sections = resume.getSections();
             dos.writeInt(sections.size());
             for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
