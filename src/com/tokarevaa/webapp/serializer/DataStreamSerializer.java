@@ -27,7 +27,6 @@ public class DataStreamSerializer implements StreamSerializer {
             writeWithException(contacts.entrySet(), dos, o -> {
                 dos.writeUTF(o.getKey().name());
                 dos.writeUTF(o.getValue());
-                throw new IOException();
             });
             Map<SectionType, Section> sections = resume.getSections();
 
