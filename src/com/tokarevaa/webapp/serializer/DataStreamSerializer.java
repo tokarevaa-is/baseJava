@@ -11,19 +11,27 @@ import java.util.Map;
 
 public class DataStreamSerializer implements StreamSerializer {
 
+    public <T> void writeWithException(Collection<T> collection, DataOutputStream dos, CustomConsumerInterface<T> consumer) throws IOException {
+        dos.writeInt(collection.size());
+        for (T item : collection) {
+            consumer.accept(item);
+        }
+    }
+
     @Override
     public void doWrite(OutputStream os, Resume resume) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(os)) {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
             Map<ContactType, String> contacts = resume.getContacts();
-            CustomConsumer.writeWithException(contacts.entrySet(), dos, o -> {
+            writeWithException(contacts.entrySet(), dos, o -> {
                 dos.writeUTF(o.getKey().name());
                 dos.writeUTF(o.getValue());
+                throw new IOException();
             });
             Map<SectionType, Section> sections = resume.getSections();
 
-            CustomConsumer.writeWithException(sections.entrySet(), dos, o -> {
+            writeWithException(sections.entrySet(), dos, o -> {
                 SectionType sectionType = SectionType.valueOf(o.getKey().name());
                 dos.writeUTF(sectionType.name());
                 switch (sectionType) {
@@ -127,18 +135,4 @@ public class DataStreamSerializer implements StreamSerializer {
     interface CustomConsumerInterface<T> {
         void accept(T t) throws IOException;
     }
-    public static class CustomConsumer implements CustomConsumerInterface {
-
-        public static <T> void writeWithException(Collection<T> collection, DataOutputStream dos, CustomConsumerInterface<T> consumer) throws Exception {
-            dos.writeInt(collection.size());
-            for (T item : collection) {
-                consumer.accept(item);
-            }
-        }
-
-        @Override
-        public void accept(Object o) throws IOException {
-        }
-    }
 }
-
