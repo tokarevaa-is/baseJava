@@ -42,17 +42,4 @@ public class ListSection extends Section {
             items.add(string);
         }
     }
-//
-//    @Override
-//    public void readData(DataInputStream dis) throws IOException {
-//        int count = dis.readInt();
-//        if (items == null) {
-//            items = new ArrayList<>();
-//        }
-//
-//        while (count > 0) {
-//            items.add(dis.readUTF());
-//            count--;
-//        }
-//    }
 }

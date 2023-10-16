@@ -11,13 +11,6 @@ import java.util.Map;
 
 public class DataStreamSerializer implements StreamSerializer {
 
-    public <T> void writeWithException(Collection<T> collection, DataOutputStream dos, CustomConsumerInterface<T> consumer) throws IOException {
-        dos.writeInt(collection.size());
-        for (T item : collection) {
-            consumer.accept(item);
-        }
-    }
-
     @Override
     public void doWrite(OutputStream os, Resume resume) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(os)) {
@@ -36,7 +29,7 @@ public class DataStreamSerializer implements StreamSerializer {
                 switch (sectionType) {
                     case PERSONAL:
                     case OBJECTIVE:
-                        dos.writeUTF(o.getValue().toString());
+                        dos.writeUTF(((TextSection) (o.getValue())).getContent());
                         break;
 
                     case QUALIFICATIONS:
@@ -80,15 +73,9 @@ public class DataStreamSerializer implements StreamSerializer {
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
 
-            int size = dis.readInt();
-            for (int i = 0; i < size; i++) {
-                ContactType contactType = ContactType.valueOf(dis.readUTF());
-                String value = dis.readUTF();
-                resume.setContact(contactType, value);
-            }
+            readWithException(dis, () -> resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
 
-            size = dis.readInt();
-            for (int i = 0; i < size; i++) {
+            readWithException(dis, () -> {
                 String sectionType = dis.readUTF();
                 SectionType st = SectionType.valueOf(sectionType);
                 Section section = st.getSection().newInstance();
@@ -123,11 +110,30 @@ public class DataStreamSerializer implements StreamSerializer {
                         break;
                 }
                 resume.setSection(st, section);
-            }
+            });
             return resume;
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void readWithException(DataInputStream dis, CustomReadInterface reader) throws IOException, IllegalAccessException, InstantiationException {
+        int size = dis.readInt();
+        for (int i = 0; i < size; i++) {
+            reader.read();
+        }
+    }
+
+    private <T> void writeWithException(Collection<T> collection, DataOutputStream dos, CustomConsumerInterface<T> consumer) throws IOException {
+        dos.writeInt(collection.size());
+        for (T item : collection) {
+            consumer.accept(item);
+        }
+    }
+
+    @FunctionalInterface
+    interface CustomReadInterface {
+        void read() throws IOException, InstantiationException, IllegalAccessException;
     }
 
     @FunctionalInterface
