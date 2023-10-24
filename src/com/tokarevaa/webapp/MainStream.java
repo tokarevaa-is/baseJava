@@ -3,7 +3,7 @@ package com.tokarevaa.webapp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
 public class MainStream {
@@ -14,14 +14,12 @@ public class MainStream {
     }
 
     private static int minValue(int[] values) {
-        AtomicInteger minValue = new AtomicInteger();
-        Arrays.stream(values).sorted().distinct().forEach(
-                o -> minValue.accumulateAndGet(o, (u, v) -> u * 10 + v));
-        return minValue.get();
+        OptionalInt value = Arrays.stream(values).sorted().distinct().reduce((u, v) -> u * 10 + v);
+        return (value.isPresent()) ? value.getAsInt() : 0;
     }
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
         int intSum = integers.stream().mapToInt(v -> v).sum() % 2;
-        return integers.stream().mapToInt(v -> v).filter(i -> i % 2 != intSum).boxed().collect(Collectors.toList());
+        return integers.stream().filter(i -> i % 2 != intSum).collect(Collectors.toList());
     }
 }
