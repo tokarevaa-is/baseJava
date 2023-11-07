@@ -1,5 +1,6 @@
 package com.tokarevaa.webapp.storage;
 
+import com.tokarevaa.webapp.Config;
 import com.tokarevaa.webapp.exception.ExistStorageException;
 import com.tokarevaa.webapp.exception.NotExistStorageException;
 import com.tokarevaa.webapp.model.Resume;
@@ -8,19 +9,22 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.UUID;
 
 import static com.tokarevaa.webapp.model.ResumeTestData.fillNewResume;
 
 public abstract class AbstractStorageTest {
-    protected final static File STORAGE_DIR = new File("C:\\Users\\aatokarev.MSC\\Documents\\java\\baseJava\\basejava\\storage");
-    private static final String UUID_1 = "uuid1";
-    private static final Resume RESUME_1 = fillNewResume(UUID_1, "Name1");
-    private static final String UUID_2 = "uuid2";
-    private static final Resume RESUME_2 = fillNewResume(UUID_2, "Name2");
-    private static final String UUID_3 = "uuid3";
-    private static final Resume RESUME_3 = fillNewResume(UUID_3, "Name3");
-    private static final String UUID_4 = "uuid4";
-    private static final Resume RESUME_4 = fillNewResume(UUID_4, "Name4");
+    protected final static File STORAGE_DIR = Config.get().getStorageDir();
+
+    private static final boolean LITE_MODE = true;
+    private static final String UUID_1 = UUID.randomUUID().toString();
+    private static final Resume RESUME_1 = fillNewResume(UUID_1, "Name1", LITE_MODE);
+    private static final String UUID_2 = UUID.randomUUID().toString();
+    private static final Resume RESUME_2 = fillNewResume(UUID_2, "Name2", LITE_MODE);
+    private static final String UUID_3 = UUID.randomUUID().toString();
+    private static final Resume RESUME_3 = fillNewResume(UUID_3, "Name3", LITE_MODE);
+    private static final String UUID_4 = UUID.randomUUID().toString();
+    private static final Resume RESUME_4 = fillNewResume(UUID_4, "Name4", LITE_MODE);
     private static final String UUID_NOT_EXISTS = "NotExist";
     protected final Storage storage;
 
@@ -53,14 +57,14 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
-        Resume newResume = fillNewResume(UUID_1, "Name Update");
+        Resume newResume = fillNewResume(UUID_1, "Name Update", LITE_MODE);
         storage.update(newResume);
-        Assert.assertTrue(newResume.equals(storage.get(UUID_1)));
+        Assert.assertEquals(newResume, storage.get(UUID_1));
     }
 
     @Test(expected = NotExistStorageException.class)
     public void updateNotExist() {
-        Resume newResume = fillNewResume(UUID_NOT_EXISTS, "Not Exist");
+        Resume newResume = fillNewResume(UUID_NOT_EXISTS, "Not Exist", LITE_MODE);
         storage.update(newResume);
         Assert.assertSame(newResume, storage.get(UUID_3));
     }
