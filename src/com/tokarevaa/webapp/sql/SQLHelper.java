@@ -18,16 +18,33 @@ public class SQLHelper {
 
     public <T> T execute(String sql, SQLExecutor<T> executor) {
         try (Connection conn = connectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)
-        ) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             return executor.execute(ps);
         } catch (SQLException e) {
-            if (e.getSQLState().equals(SQL_DUPLICATE_ERROR)) {
-                throw new ExistStorageException(null);
-            } else {
-                throw new StorageException(e);
-            }
+            throw exceptionTransform(e);
         }
+    }
+
+    public void transactionalExecute(SQLTransaction executor) {
+        try (Connection connection = connectionFactory.getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+                executor.execute(connection);
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            }
+        } catch (SQLException e) {
+            throw exceptionTransform(e);
+        }
+    }
+
+    private StorageException exceptionTransform(SQLException e) {
+        if (e.getSQLState().equals(SQL_DUPLICATE_ERROR)) {
+            return new ExistStorageException(null);
+        }
+        return new StorageException(e);
     }
 
     public void execute(String sql) {
@@ -37,5 +54,9 @@ public class SQLHelper {
     @FunctionalInterface
     public interface SQLExecutor<T> {
         T execute(PreparedStatement ps) throws SQLException;
+    }
+
+    public interface SQLTransaction {
+        void execute(Connection connection) throws SQLException;
     }
 }

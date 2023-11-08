@@ -16,7 +16,13 @@ import static com.tokarevaa.webapp.model.ResumeTestData.fillNewResume;
 public abstract class AbstractStorageTest {
     protected final static File STORAGE_DIR = Config.get().getStorageDir();
 
-    private static final boolean LITE_MODE = true;
+    /*
+    LITE_MODE:
+    0 - only basic resume data (uuid, full name)
+    1 - basic data + contacts
+    2 - full data
+    */
+    private static final int LITE_MODE = 1;
     private static final String UUID_1 = UUID.randomUUID().toString();
     private static final Resume RESUME_1 = fillNewResume(UUID_1, "Name1", LITE_MODE);
     private static final String UUID_2 = UUID.randomUUID().toString();
