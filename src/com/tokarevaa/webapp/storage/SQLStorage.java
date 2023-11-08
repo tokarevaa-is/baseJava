@@ -24,7 +24,6 @@ public class SQLStorage implements Storage {
 
     @Override
     public void save(Resume r) {
-
         sqlHelper.execute("INSERT INTO resume (uuid, full_name) VALUES (?,?)", ps -> {
             ps.setString(1, r.getUuid());
             ps.setString(2, r.getFullName());
@@ -84,11 +83,7 @@ public class SQLStorage implements Storage {
     public int size() {
         return sqlHelper.execute("SELECT count(*) FROM resume", ps -> {
             ResultSet rs = ps.executeQuery();
-            if (rs.next()){
-                return rs.getInt(1);
-            } else {
-                return 0;
-            }
+            return rs.next() ? rs.getInt(1) : 0;
         });
     }
 }
