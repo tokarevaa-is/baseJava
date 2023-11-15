@@ -19,8 +19,6 @@ public interface Storage {
 
     void update(Resume resume);
 
-//    Resume[] getAll();
-
     List<Resume> getAllSorted();
 
     int size();

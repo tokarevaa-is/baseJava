@@ -25,12 +25,13 @@ public class SQLHelper {
         }
     }
 
-    public void transactionalExecute(SQLTransaction executor) {
+    public <T> T transactionalExecute(SQLTransaction<T> executor) {
         try (Connection connection = connectionFactory.getConnection()) {
             try {
                 connection.setAutoCommit(false);
-                executor.execute(connection);
+                T result = executor.execute(connection);
                 connection.commit();
+                return result;
             } catch (SQLException e) {
                 connection.rollback();
                 throw e;
@@ -56,7 +57,7 @@ public class SQLHelper {
         T execute(PreparedStatement ps) throws SQLException;
     }
 
-    public interface SQLTransaction {
-        void execute(Connection connection) throws SQLException;
+    public interface SQLTransaction<T> {
+        T execute(Connection connection) throws SQLException;
     }
 }

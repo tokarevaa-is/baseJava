@@ -10,7 +10,8 @@ import java.nio.file.Files;
 import java.util.Properties;
 
 public class Config {
-    protected static final File PROPERTIES = new File("config\\resume.properties");
+    protected static final File PROPERTIES = new File(
+            "C:\\Users\\aatokarev.MSC\\Documents\\java\\baseJava\\basejava\\config\\resume.properties");
     private static final Config INSTANCE = new Config();
     private final File storageDir;
     private final Storage storageSQL;

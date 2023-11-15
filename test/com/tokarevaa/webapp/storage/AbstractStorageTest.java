@@ -9,6 +9,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import static com.tokarevaa.webapp.model.ResumeTestData.fillNewResume;
@@ -22,7 +25,7 @@ public abstract class AbstractStorageTest {
     1 - basic data + contacts
     2 - full data
     */
-    private static final int LITE_MODE = 1;
+    private static final int LITE_MODE = 2;
     private static final String UUID_1 = UUID.randomUUID().toString();
     private static final Resume RESUME_1 = fillNewResume(UUID_1, "Name1", LITE_MODE);
     private static final String UUID_2 = UUID.randomUUID().toString();
@@ -87,7 +90,9 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void getAllSorted() {
-        Assert.assertArrayEquals(getStaticResumes(), storage.getAllSorted().toArray(new Resume[0]));
+        List<Resume> sortedResumes = Arrays.asList(getStaticResumes());
+        Collections.sort(sortedResumes);
+        Assert.assertEquals(sortedResumes, storage.getAllSorted());
     }
 
     @Test

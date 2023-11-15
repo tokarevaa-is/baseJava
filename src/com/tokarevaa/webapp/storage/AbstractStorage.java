@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 public abstract class AbstractStorage<KeyValue> implements Storage {
 
-    private static final Comparator<Resume> RESUME_COMPARATOR = Comparator.comparing(Resume::getUuid);
+    private static final Comparator<Resume> RESUME_COMPARATOR = Comparator.comparing(Resume::getFullName);
     private static final Logger LOGGER = Logger.getLogger(AbstractStorage.class.getName());
 
     protected abstract KeyValue getSearchKey(String uuid);
