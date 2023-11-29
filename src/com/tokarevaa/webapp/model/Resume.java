@@ -90,4 +90,8 @@ public class Resume implements Comparable<Resume>, Serializable {
         int result = fullName.compareTo(o.fullName);
         return result != 0 ? result : uuid.compareTo(o.uuid);
     }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 }
