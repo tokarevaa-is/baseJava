@@ -1,8 +1,8 @@
 package com.tokarevaa.webapp.model;
 
 public enum SectionType {
-    PERSONAL("Личные качества", TextSection.class),
     OBJECTIVE("Позиция", TextSection.class),
+    PERSONAL("Личные качества", TextSection.class),
     ACHIEVEMENT("Достижения", ListSection.class),
     QUALIFICATIONS("Квалификация", ListSection.class),
     EXPERIENCE("Опыт работы", OrganizationSection.class),

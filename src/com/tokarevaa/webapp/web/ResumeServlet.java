@@ -1,8 +1,7 @@
 package com.tokarevaa.webapp.web;
 
 import com.tokarevaa.webapp.Config;
-import com.tokarevaa.webapp.model.ContactType;
-import com.tokarevaa.webapp.model.Resume;
+import com.tokarevaa.webapp.model.*;
 import com.tokarevaa.webapp.storage.Storage;
 
 import javax.servlet.ServletConfig;
@@ -11,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 
 /*
 6e0a44a8-a59b-448d-a9a5-8446d0f0318e,Name1
@@ -25,6 +26,10 @@ public class ResumeServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         storage = Config.get().getStorageSQL();
+    }
+
+    private boolean isEmpty(String value) {
+        return value == null || value.trim().isEmpty();
     }
 
     @Override
@@ -45,6 +50,15 @@ public class ResumeServlet extends HttpServlet {
             case "view":
             case "edit":
                 resume = storage.get(uuid);
+                for (SectionType type : SectionType.values()) {
+                    if (resume.getSections(type) == null) {
+                        try {
+                            resume.setSection(type, type.getSection().newInstance());
+                        } catch (InstantiationException | IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
@@ -64,10 +78,30 @@ public class ResumeServlet extends HttpServlet {
         resume.setFullName(fullName);
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
-            if (value != null && value.trim().length() != 0) {
-                resume.setContact(type, value);
-            } else {
+            if (isEmpty(value)) {
                 resume.getContacts().remove(type);
+            } else {
+                resume.setContact(type, value);
+            }
+        }
+        for (SectionType type : SectionType.values()) {
+            String value = request.getParameter(type.name());
+            if (isEmpty(value)) {
+                resume.getSections().remove(type);
+            } else {
+                switch (type) {
+                    case PERSONAL:
+                    case OBJECTIVE:
+                        resume.setSection(type, new TextSection(value));
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        if (value.isEmpty()) {
+                            resume.setSection(type, new ListSection(Collections.singletonList("")));
+                        } else {
+                            resume.setSection(type, new ListSection(Arrays.asList(value.split("\\n"))));
+                        }
+                }
             }
         }
         storage.update(resume);
