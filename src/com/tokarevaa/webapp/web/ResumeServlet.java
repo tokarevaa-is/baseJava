@@ -13,12 +13,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
-/*
-6e0a44a8-a59b-448d-a9a5-8446d0f0318e,Name1
-b9fd66c3-c1d2-4d92-8473-c886913d37c3,Name2
-0e8f7fbf-9f0d-41d2-bead-4fde95aa16cb,Name3
-
-*/
 public class ResumeServlet extends HttpServlet {
     private Storage storage;
 
@@ -72,39 +66,50 @@ public class ResumeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
+        boolean error = false;
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        Resume resume = storage.get(uuid);
-        resume.setFullName(fullName);
-        for (ContactType type : ContactType.values()) {
-            String value = request.getParameter(type.name());
-            if (isEmpty(value)) {
-                resume.getContacts().remove(type);
-            } else {
-                resume.setContact(type, value);
-            }
+        if (fullName == null || fullName.isEmpty()) {
+            error = true;
         }
-        for (SectionType type : SectionType.values()) {
-            String value = request.getParameter(type.name());
-            if (isEmpty(value)) {
-                resume.getSections().remove(type);
-            } else {
-                switch (type) {
-                    case PERSONAL:
-                    case OBJECTIVE:
-                        resume.setSection(type, new TextSection(value));
-                        break;
-                    case ACHIEVEMENT:
-                    case QUALIFICATIONS:
-                        if (value.isEmpty()) {
-                            resume.setSection(type, new ListSection(Collections.singletonList("")));
-                        } else {
-                            resume.setSection(type, new ListSection(Arrays.asList(value.split("\\n"))));
-                        }
+        if (!error) {
+            Resume resume = storage.get(uuid);
+            resume.setFullName(fullName);
+            for (ContactType type : ContactType.values()) {
+                String value = request.getParameter(type.name());
+                if (isEmpty(value)) {
+                    resume.getContacts().remove(type);
+                } else {
+                    resume.setContact(type, value);
                 }
             }
+            for (SectionType type : SectionType.values()) {
+                String value = request.getParameter(type.name());
+                if (isEmpty(value)) {
+                    error = true;
+                    break;
+                } else {
+                    switch (type) {
+                        case PERSONAL:
+                        case OBJECTIVE:
+                            resume.setSection(type, new TextSection(value));
+                            break;
+                        case ACHIEVEMENT:
+                        case QUALIFICATIONS:
+                            if (value.isEmpty()) {
+                                resume.setSection(type, new ListSection(Collections.singletonList("")));
+                            } else {
+                                resume.setSection(type, new ListSection(Arrays.asList(value.split("\\n"))));
+                            }
+                    }
+                }
+            }
+            storage.update(resume);
         }
-        storage.update(resume);
-        response.sendRedirect("resume");
+        if (error) {
+            response.sendRedirect("resume?uuid=" + uuid + "&action=edit");
+        } else {
+            response.sendRedirect("resume");
+        }
     }
 }
