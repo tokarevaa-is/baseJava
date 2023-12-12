@@ -78,7 +78,7 @@ public class DataStreamSerializer implements StreamSerializer {
             readWithException(dis, () -> {
                 String sectionType = dis.readUTF();
                 SectionType st = SectionType.valueOf(sectionType);
-                Section section = st.getSection().newInstance();
+                Section section = st.getSectionClass().newInstance();
 
                 switch (st) {
                     case PERSONAL:

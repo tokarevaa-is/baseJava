@@ -11,6 +11,7 @@ public class TextSection extends Section {
     }
 
     public TextSection() {
+        content = "";
     }
 
     public void setContent(String content) {

@@ -30,6 +30,16 @@ public class Resume implements Comparable<Resume>, Serializable {
     }
 
     public Resume() {
+        try {
+            this.setSection(SectionType.OBJECTIVE, SectionType.OBJECTIVE.getSectionClass().newInstance());
+            this.setSection(SectionType.PERSONAL, SectionType.PERSONAL.getSectionClass().newInstance());
+            this.setSection(SectionType.ACHIEVEMENT, SectionType.ACHIEVEMENT.getSectionClass().newInstance());
+            this.setSection(SectionType.QUALIFICATIONS, SectionType.QUALIFICATIONS.getSectionClass().newInstance());
+            this.setSection(SectionType.EXPERIENCE, SectionType.EXPERIENCE.getSectionClass().newInstance());
+            this.setSection(SectionType.EDUCATION, SectionType.EDUCATION.getSectionClass().newInstance());
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void setContact(ContactType contact, String value) {

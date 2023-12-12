@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,6 +34,9 @@ public class Organization implements Serializable {
     }
 
     public Organization() {
+        title = "";
+        link = "";
+        positions = new ArrayList<>();
     }
 
     public String getTitle() {

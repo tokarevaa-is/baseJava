@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage;
@@ -37,17 +36,23 @@ public class ResumeServlet extends HttpServlet {
         }
         Resume resume;
         switch (action) {
+            case "add":
+                resume = new Resume();
+                break;
             case "delete":
                 storage.delete(uuid);
                 response.sendRedirect("resume");
                 return;
             case "view":
+                resume = storage.get(uuid);
+                break;
             case "edit":
                 resume = storage.get(uuid);
                 for (SectionType type : SectionType.values()) {
-                    if (resume.getSections(type) == null) {
+                    Section section = resume.getSections(type);
+                    if (section == null) {
                         try {
-                            resume.setSection(type, type.getSection().newInstance());
+                            resume.setSection(type, type.getSectionClass().newInstance());
                         } catch (InstantiationException | IllegalAccessException e) {
                             throw new RuntimeException(e);
                         }
@@ -67,14 +72,23 @@ public class ResumeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
         boolean error = false;
+        Resume resume = null;
+
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
+        boolean create = isEmpty(uuid);
+
         if (fullName == null || fullName.isEmpty()) {
             error = true;
+        } else {
+            if (create) {
+                resume = new Resume(fullName);
+            } else {
+                resume = storage.get(uuid);
+                resume.setFullName(fullName);
+            }
         }
         if (!error) {
-            Resume resume = storage.get(uuid);
-            resume.setFullName(fullName);
             for (ContactType type : ContactType.values()) {
                 String value = request.getParameter(type.name());
                 if (isEmpty(value)) {
@@ -85,7 +99,7 @@ public class ResumeServlet extends HttpServlet {
             }
             for (SectionType type : SectionType.values()) {
                 String value = request.getParameter(type.name());
-                if (isEmpty(value)) {
+                if (isEmpty(value) && (type != SectionType.EDUCATION && type != SectionType.EXPERIENCE)) {
                     error = true;
                     break;
                 } else {
@@ -96,15 +110,16 @@ public class ResumeServlet extends HttpServlet {
                             break;
                         case ACHIEVEMENT:
                         case QUALIFICATIONS:
-                            if (value.isEmpty()) {
-                                resume.setSection(type, new ListSection(Collections.singletonList("")));
-                            } else {
-                                resume.setSection(type, new ListSection(Arrays.asList(value.split("\\n"))));
-                            }
+                            resume.setSection(type, new ListSection(Arrays.asList(value.split("\\n"))));
+                            break;
                     }
                 }
             }
-            storage.update(resume);
+            if (create) {
+                storage.save(resume);
+            } else {
+                storage.update(resume);
+            }
         }
         if (error) {
             response.sendRedirect("resume?uuid=" + uuid + "&action=edit");

@@ -20,7 +20,7 @@ public enum SectionType {
         return title;
     }
 
-    public Class<? extends Section> getSection() {
+    public Class<? extends Section> getSectionClass() {
         return sectionClass;
     }
 }
