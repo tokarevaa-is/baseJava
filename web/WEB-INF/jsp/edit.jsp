@@ -24,8 +24,8 @@
     <form method="post" action="resume" enctype="application/x-www-form-urlencoded">
         <input type="hidden" name="uuid" value="${resume.uuid}">
         <dl>
-            <dt>Имя:</dt>
-            <dd><input type="text" name="fullName" size=50 value="${resume.fullName}"></dd>
+            <dt>Имя *:</dt>
+            <dd><input required="required" type="text" name="fullName" size=50 value="${resume.fullName}"></dd>
         </dl>
         <h3>Контакты:</h3>
         <c:forEach var="type" items="<%=ContactType.values()%>">
@@ -40,13 +40,13 @@
             <h3>${type.title}</h3>
             <c:choose>
                 <c:when test="${type==SectionType.PERSONAL || type==SectionType.OBJECTIVE}">
-                <textarea name='${type}' cols="80" rows="5">
+                <textarea name='${type}' cols="80" rows="5" required="required">
 <%----%>
                     <%=section%>
                 </textarea>
                 </c:when>
                 <c:when test="${type==SectionType.QUALIFICATIONS || type==SectionType.ACHIEVEMENT}">
-                <textarea name='${type}' cols="80" rows="5">
+                <textarea name='${type}' cols="80" rows="5" required="required">
 <%----%>
                     <%=String.join("\n", ((ListSection) section).getItems())%>
                 </textarea>

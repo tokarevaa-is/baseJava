@@ -122,7 +122,11 @@ public class ResumeServlet extends HttpServlet {
             }
         }
         if (error) {
-            response.sendRedirect("resume?uuid=" + uuid + "&action=edit");
+            if (uuid.isEmpty()) {
+                response.sendRedirect("resume?add");
+            } else {
+                response.sendRedirect("resume?uuid=" + uuid + "&action=edit");
+            }
         } else {
             response.sendRedirect("resume");
         }
