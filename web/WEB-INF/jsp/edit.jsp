@@ -40,13 +40,13 @@
             <h3>${type.title}</h3>
             <c:choose>
                 <c:when test="${type==SectionType.PERSONAL || type==SectionType.OBJECTIVE}">
-                <textarea name='${type}' cols="80" rows="5" required="required">
+                <textarea name='${type}' cols="80" rows="5">
 <%----%>
                     <%=section%>
                 </textarea>
                 </c:when>
                 <c:when test="${type==SectionType.QUALIFICATIONS || type==SectionType.ACHIEVEMENT}">
-                <textarea name='${type}' cols="80" rows="5" required="required">
+                <textarea name='${type}' cols="80" rows="5">
 <%----%>
                     <%=String.join("\n", ((ListSection) section).getItems())%>
                 </textarea>

@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage;
@@ -110,7 +112,9 @@ public class ResumeServlet extends HttpServlet {
                             break;
                         case ACHIEVEMENT:
                         case QUALIFICATIONS:
-                            resume.setSection(type, new ListSection(Arrays.asList(value.split("\\n"))));
+                            List<String> values = new ArrayList<>(Arrays.asList(value.split("\\n")));
+                            values.removeIf(str -> str.isEmpty() || str.equals("\r"));
+                            resume.setSection(type, new ListSection(values));
                             break;
                     }
                 }
