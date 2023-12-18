@@ -10,6 +10,8 @@
 <%@ page import="com.tokarevaa.webapp.model.SectionType" %>
 <%@ page import="com.tokarevaa.webapp.model.TextSection" %>
 <%@ page import="com.tokarevaa.webapp.model.ListSection" %>
+<%@ page import="com.tokarevaa.webapp.model.OrganizationSection" %>
+<%@ page import="com.tokarevaa.webapp.util.Assistant" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
@@ -54,6 +56,38 @@
             </c:forEach>
         </c:when>
         <c:when test="${type==SectionType.EXPERIENCE || type==SectionType.EDUCATION}">
+            <table cellpadding="2" style="vertical-align: top">
+                <c:forEach var="org" items="<%=((OrganizationSection) section).getItems()%>">
+                    <tr>
+                        <td colspan="2">
+                            <c:choose>
+                                <c:when test="${empty org.link}">
+                                    <h3>${org.title}</h3>
+                                </c:when>
+                                <c:otherwise>
+                                    <h3><a href="${org.link}">${org.title}</a></h3>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                    </tr>
+                    <c:forEach var="position" items="${org.positions}">
+                        <jsp:useBean id="position" type="com.tokarevaa.webapp.model.Organization.Position"/>
+                        <tr>
+                            <td width="40%"><i>${position.position}</i><br>
+                                <b>C <%=Assistant.formatDate(position.getDateFrom())%>
+                                    по <%=Assistant.formatDate(position.getDateTo())%>
+                                </b>
+                            </td>
+                            <td style="vertical-align: top">${position.position}
+                                <br>
+                                <i>
+                                        ${position.description}
+                                </i>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </c:forEach>
+            </table>
         </c:when>
     </c:choose>
     </c:if>

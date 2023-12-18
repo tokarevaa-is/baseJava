@@ -8,6 +8,8 @@
 <%@ page import="com.tokarevaa.webapp.model.ContactType" %>
 <%@ page import="com.tokarevaa.webapp.model.SectionType" %>
 <%@ page import="com.tokarevaa.webapp.model.ListSection" %>
+<%@ page import="com.tokarevaa.webapp.model.OrganizationSection" %>
+<%@ page import="com.tokarevaa.webapp.util.Assistant" %>
 <%@ page contentType="text/html;charset=UTF-8" trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -52,11 +54,60 @@
                 </textarea>
                 </c:when>
                 <c:when test="${type==SectionType.EXPERIENCE || type==SectionType.EDUCATION}">
-                    <%--                <textarea name='${type}' cols="80" rows="5">--%>
 
-                    <%--                </textarea>--%>
-                </c:when>
-                <c:when test="">
+                    <button name="addOrg" type="submit" value="${type}"><img src="img/add.png"></a>Добавить</button>
+
+                    <c:forEach var="org"
+                               items="<%=((OrganizationSection) section).getItems()%>"
+                               varStatus="counter">
+                        <dl>
+                            <dt>Организация</dt>
+                            <dd><input type="text" name="${type}" size="255" value="${org.title}"></dd>
+                        </dl>
+                        <dl>
+                            <dt>Сайт</dt>
+                            <dd><input type="text" name="${type}url" size="255" value="${org.link}"></dd>
+                        </dl>
+                        <br>
+                        <div style="margin-left: 25px">
+                            <c:forEach var="pos" items="${org.positions}">
+                                <jsp:useBean id="pos" type="com.tokarevaa.webapp.model.Organization.Position"/>
+                                <dl>
+                                    <dt>Должность</dt>
+                                    <dd><input type="text"
+                                               name="${type}${counter.index}posname"
+                                               size="64"
+                                               value="${pos.position}"></dd>
+                                </dl>
+                                <dl>
+                                    <dt>Описание</dt>
+                                    <dd><textarea
+                                            name="${type}${counter.index}description"
+                                            rows=5
+                                            cols="80">
+<%----%>
+                                            ${pos.description}
+                                    </textarea></dd>
+                                </dl>
+                                <dl>
+                                    <dt>C</dt>
+                                    <dd><input type="text"
+                                               name="${type}${counter.index}startDate"
+                                               size="10"
+                                               value="<%=Assistant.formatDate(pos.getDateFrom())%>"
+                                               placeholder="MM/yyyy"></dd>
+                                </dl>
+                                <dl>
+                                    <dt>ПО</dt>
+                                    <dd><input type="text"
+                                               name="${type}${counter.index}endDate"
+                                               size="10"
+                                               value="<%=Assistant.formatDate(pos.getDateTo())%>"
+                                               placeholder="MM/yyyy"></dd>
+                                </dl>
+                            </c:forEach>
+                        </div>
+                    </c:forEach>
                 </c:when>
             </c:choose>
         </c:forEach>

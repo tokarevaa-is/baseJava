@@ -1,6 +1,6 @@
 package com.tokarevaa.webapp.model;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,7 +12,11 @@ public class ListSection extends Section {
     }
 
     public ListSection() {
-        items = new ArrayList<>();
+        this("");
+    }
+
+    public ListSection(String... items) {
+        this(Arrays.asList(items));
     }
 
     @Override

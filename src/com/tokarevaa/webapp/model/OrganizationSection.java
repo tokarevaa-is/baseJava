@@ -1,8 +1,7 @@
 package com.tokarevaa.webapp.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.time.LocalDate;
+import java.util.*;
 
 public class OrganizationSection extends Section {
     private final List<Organization> items;
@@ -39,5 +38,11 @@ public class OrganizationSection extends Section {
 
     public void add(Organization org) {
         items.add(org);
+    }
+
+    public void addEmpty() {
+        add(
+                new Organization("", "", Collections.singletonList(
+                        new Organization.Position("", "", LocalDate.now(), LocalDate.now()))));
     }
 }
