@@ -150,7 +150,7 @@ public class ResumeServlet extends HttpServlet {
                                 String[] descriptions = request.getParameterValues(posIndex + "description");
                                 String[] startDates = request.getParameterValues(posIndex + "startDate");
                                 String[] endDates = request.getParameterValues(posIndex + "endDate");
-                                for (int j = 0; (j < posName.length) && !Assistant.isEmpty(posName[j]); j++) {
+                                for (int j = 0; (j < posName.length) /*&& !Assistant.isEmpty(posName[j])*/; j++) {
                                     positions.add(new Organization.Position(posName[j], descriptions[j], Assistant.parseDate(startDates[j]), Assistant.parseDate(endDates[j])));
                                 }
                                 orgs.add(new Organization(orgTitle, links[i], positions));
