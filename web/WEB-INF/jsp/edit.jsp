@@ -55,7 +55,7 @@
                 </c:when>
                 <c:when test="${type==SectionType.EXPERIENCE || type==SectionType.EDUCATION}">
 
-                    <button name="addOrg" type="submit" value="${type}"><img src="img/add.png"></a>Добавить</button>
+<%--                    <button name="addOrg" type="submit" value="${type}"><img src="img/add.png"></a>Добавить</button>--%>
 
                     <c:forEach var="org"
                                items="<%=((OrganizationSection) section).getItems()%>"

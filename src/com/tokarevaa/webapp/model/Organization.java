@@ -15,9 +15,9 @@ import java.util.Objects;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
 
-    private String title;
-    private String link;
-    private List<Position> positions;
+    private final String title;
+    private final String link;
+    private final List<Position> positions;
 
     public Organization(String title, String link, List<Position> positions) {
         Objects.requireNonNull(title, "Title must not be null");
@@ -49,6 +49,10 @@ public class Organization implements Serializable {
 
     public List<Position> getPositions() {
         return positions;
+    }
+
+    public void addPosition(Position position) {
+        positions.add(position);
     }
 
     @Override
